@@ -1,0 +1,121 @@
+/* Precision terminal: scoped exclusively to existing tabular data surfaces. */
+:is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table,.bc-history) {
+  --table-surface:linear-gradient(110deg,#111a23,#0c131b 65%,#0e171f);
+  --table-head:linear-gradient(110deg,#151f29,#101820);
+  --table-hover:linear-gradient(100deg,#143e32b3,#112a24a6 55%,#0e1d20);
+  --table-line:#293740;
+  --table-mint:#37d49a;
+  --table-muted:#91a1b1;
+  font-variant-numeric:tabular-nums;
+  min-width:0;
+  max-width:100%;
+}
+:is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table) {
+  background:var(--table-surface);
+  border:1px solid var(--table-line);
+  border-radius:12px;
+  overflow-x:auto;
+  box-shadow:0 8px 24px #0002,inset 0 1px #ffffff03;
+}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.history-list>div,.p3-position-list .p3-position-row,.p3-history-list>div,.lb-table .lb-row,.bc-table .bc-stand,.bc-history>div:not(.bc-panel-title):not(.bc-hidden)) {
+  position:relative;
+  border-color:var(--table-line);
+  color:#e2eaf0;
+  line-height:1.5;
+  transition:background-color 140ms ease,box-shadow 140ms ease;
+}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.p3-position-list .p3-position-row,.lb-table .lb-row,.bc-table .bc-stand):not(.labels) {
+  min-height:78px;
+  padding:16px 20px;
+}
+:is(.history-list>div,.p3-history-list>div,.bc-history>div:not(.bc-panel-title):not(.bc-hidden)) {padding:16px 20px}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.p3-position-list .p3-position-row,.lb-table .lb-row,.bc-table .bc-stand).labels {
+  min-height:52px;
+  padding:14px 20px;
+  background:var(--table-head);
+  color:#a1b0bf;
+  font-size:12px;
+  font-weight:650;
+  line-height:1.45;
+  letter-spacing:.055em;
+  border-bottom:1px solid var(--table-line);
+}
+.market-table.full .trow.labels button {color:#a1b0bf;font-size:12px;line-height:1.45}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.history-list>div,.p3-position-list .p3-position-row,.p3-history-list>div,.lb-table .lb-row,.bc-table .bc-stand) > * {min-width:0}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.history-list>div,.p3-position-list .p3-position-row,.p3-history-list>div,.lb-table .lb-row,.bc-table .bc-stand) :is(b,strong) {line-height:1.45}
+:is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.history-list>div,.p3-position-list .p3-position-row,.p3-history-list>div,.lb-table .lb-row,.bc-table .bc-stand,.bc-history>div:not(.bc-panel-title):not(.bc-hidden)) small {
+  color:var(--table-muted);
+  font-size:12px;
+  line-height:1.5;
+}
+.market-table .trow {gap:16px;font-size:14px;grid-template-columns:minmax(225px,1.4fr) minmax(145px,1fr) minmax(100px,.75fr) minmax(200px,1.3fr) minmax(100px,.8fr) minmax(82px,.55fr);min-width:1040px}
+.market-table .trow>*:nth-child(n+4) {display:block}
+.market-table .trow .pair-name {min-width:0;gap:10px}
+.market-table .pair-name>b {font-size:15px;overflow-wrap:anywhere}
+.market-table .pair-name small {font-weight:400;margin-top:3px}
+.market-table .range-cell {font-size:12px;line-height:1.5;white-space:normal}
+.market-table .trow>:is(:nth-child(2),:nth-child(3),:nth-child(4),:nth-child(5)) {font-variant-numeric:tabular-nums;font-family:var(--mono)}
+:is(.positions-table .pos-row,.history-table .history-row,.p3-position-list .p3-position-row,.lb-table .lb-row) {font-size:14px}
+.lb-table .lb-row>:is(span,b),.lb-table .lb-player>span>b {font-size:14px}
+.lb-table .lb-player>span {min-width:0}
+.lb-table .lb-player>span>b,.bc-table .bc-player>b {overflow-wrap:anywhere}
+.bc-table .bc-stand {min-width:1100px;grid-template-columns:65px minmax(220px,1.5fr) minmax(135px,1fr) minmax(125px,1fr) minmax(145px,1fr) minmax(175px,1.2fr) minmax(100px,.7fr);font-size:14px}
+.bc-table .bc-stand em {font-size:12px}
+.p3-history-list>div {min-width:1050px}
+.p3-position-list .p3-position-row {min-width:1150px}
+/* Retain existing semantic status colors after the secondary-text treatment. */
+:is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table,.bc-history) .up,
+.bc-table .bc-stand small.eligible {color:#48e2aa}
+:is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table,.bc-history) .down {color:#ff7185}
+.bc-table .bc-stand small.needs-trade {color:#efb85a}
+/* Use existing user/liquidation states; never manufacture a selected row. */
+:is(.lb-table .lb-row,.bc-table .bc-stand).is-user {background:var(--table-hover);box-shadow:inset 3px 0 var(--table-mint),inset 0 1px #37d49a35,inset 0 -1px #37d49a25}
+.bc-table .bc-stand.is-user.is-ineligible {background:linear-gradient(100deg,#392c2080,#151b20);box-shadow:inset 3px 0 #e9ad4d}
+.history-table .history-row.liquidated {box-shadow:inset 3px 0 #ff6474}
+@media(hover:hover) {
+  :is(.market-table .trow,.positions-table .pos-row,.history-table .history-row,.p3-position-list .p3-position-row,.lb-table .lb-row,.bc-table .bc-stand):not(.labels):hover,
+  :is(.history-list>div,.p3-history-list>div,.bc-history>div:not(.bc-panel-title):not(.bc-hidden)):hover {
+    background:var(--table-hover);
+    box-shadow:inset 3px 0 var(--table-mint),inset 0 1px #37d49a40,inset 0 -1px #37d49a30;
+  }
+  .history-table .history-row.liquidated:hover {box-shadow:inset 3px 0 #ff6474,inset 0 1px #37d49a30}
+}
+:is(.market-table .trade-link,.p3-history-list .p3-trade-card-button) {
+  min-height:40px;
+  padding:9px 16px;
+  border:1px solid #4de8af;
+  border-radius:7px;
+  background:linear-gradient(125deg,#43e8ad,#2ed79b);
+  color:#041b12;
+  font-size:14px;
+  font-weight:750;
+  box-shadow:0 3px 12px #37d49a12;
+}
+:is(.market-table .trade-link,.p3-history-list .p3-trade-card-button):hover {background:#65efbc;box-shadow:0 0 14px #37d49a28}
+/* Closing a position stays rose, distinct from Trade / Generate card. */
+:is(.positions-table .pos-row,.p3-position-list .p3-position-row) button {
+  min-height:38px;padding:7px 10px;border-radius:6px;
+  border-color:#804454;background:#321b25;color:#ffb0bd;font-size:12px;
+}
+:is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table) button:focus-visible {
+  outline:2px solid var(--table-mint);outline-offset:-3px;
+}
+.bc-table .bc-stand:focus-visible {background:var(--table-hover);outline:2px solid var(--table-mint);outline-offset:-3px}
+@media(max-width:650px) {
+  :is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table) {border-radius:9px}
+  .history-list>div {min-width:540px}
+  .bc-history>div:not(.bc-panel-title):not(.bc-hidden) {padding:14px 12px}
+}
+@media(prefers-reduced-motion:reduce) {
+  :is(.market-table,.positions-table,.history-table,.history-list,.p3-position-list,.p3-history-list,.lb-table,.bc-table,.bc-history) * {transition:none}
+}
+/* Room for long participant names and full numeric values in scrollable boards. */
+.lb-table .lb-row {min-width:980px;gap:18px}
+.lb-table .lb-row.competition {min-width:1120px}
+.lb-table .lb-row>:not(.lb-player) {font-variant-numeric:tabular-nums}
+.lb-table .lb-player small {white-space:normal}
+.p3-position-list .p3-position-row>span:last-child {flex-wrap:wrap}
+.p3-position-list .p3-position-row>span:last-child>button:first-child {
+  border-color:#4de8af;background:linear-gradient(125deg,#43e8ad,#2ed79b);
+  color:#041b12;font-weight:750;
+}

@@ -1,0 +1,3 @@
+"use client";
+import Link from "next/link";
+export default function ErrorPage({reset}:{error:Error&{digest?:string},reset:()=>void}){return <main className="system-page"><div className="system-card"><i aria-hidden="true">!</i><span>RECOVERABLE APPLICATION ERROR</span><h1>PaperForge hit an unexpected problem</h1><p>Your browser-local balance, positions and profile have not intentionally been removed. Try reloading this screen; if the issue continues, return to the main paper-trading experience.</p><div><button className="primary" onClick={reset}>Try again</button><Link className="secondary" href="/">Return home</Link></div><small>No real funds are involved. PaperForge stores its state in the current browser.</small></div></main>}

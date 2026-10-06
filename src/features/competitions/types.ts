@@ -1,0 +1,101 @@
+export type Difficulty = "Easy" | "Medium" | "Hard" | "Expert";
+export type Status = "active" | "finished" | "eliminated";
+export type Settings = {
+  name: string;
+  duration: number;
+  spots: number;
+  difficulty: Difficulty;
+  allocation: number;
+  maxLeverage: number;
+  marketMode: "all" | "majors" | "custom";
+  custom: string[];
+  showPositions: boolean;
+  showActivity: boolean;
+  repeats: boolean;
+  maxPositions: number;
+  elimination: boolean;
+};
+export type Position = {
+  id: number;
+  pair: string;
+  side: "Long" | "Short";
+  lev: number;
+  margin: number;
+  size: number;
+  entry: number;
+  liquidation: number;
+  maintenanceMarginRate?: number;
+  liquidationFeeRate?: number;
+  openFee: number;
+  opened: number;
+};
+export type Trade = Position & {
+  exit: number;
+  pnl: number;
+  fee: number;
+  closed: number;
+  reason: string;
+  marginLost?: number;
+  liquidationFee?: number;
+};
+export type Player = {
+  id: string;
+  name: string;
+  isUser: boolean;
+  strategy: string;
+  avatar: string;
+  balance: number;
+  realized: number;
+  fees: number;
+  positions: Position[];
+  trades: Trade[];
+  status: Status;
+  rank: number;
+  previousRank: number;
+  achieved: number;
+};
+export type Event = {
+  id: number;
+  text: string;
+  at: number;
+  tone?: "up" | "down" | "info";
+};
+export type Lobby = {
+  version: number;
+  feeAccounting?: number;
+  status: "active" | "finished";
+  settings: Settings;
+  start: number;
+  end: number;
+  players: Player[];
+  events: Event[];
+  finalized?: number;
+};
+export type Stats = {
+  lastFinalizedLobby?: number;
+  entered: number;
+  wins: number;
+  podiums: number;
+  streak: number;
+  bestRank: number;
+  bestDifficulty: string;
+  pnl: number;
+  trades: number;
+  results: Array<{
+    name: string;
+    difficulty: string;
+    duration: number;
+    rank: number;
+    equity: number;
+    result: string;
+    at: number;
+  }>;
+};
+export type Candle = {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+};

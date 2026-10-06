@@ -1,0 +1,42 @@
+PAPERFORGE - QUICK START
+
+PaperForge is a Next.js and TypeScript application for practising crypto
+futures trading with virtual funds.
+
+REQUIREMENTS
+Node.js 22.13.0 or newer and npm.
+Internet access is required for live market data.
+
+LOCAL DEVELOPMENT
+From this project directory:
+
+   npm ci
+   npm run dev
+
+Open the URL printed in the terminal, usually http://localhost:3000.
+Stop the server with Ctrl+C.
+
+In Windows PowerShell, use npm.cmd if npm is blocked by execution policy:
+
+   npm.cmd ci
+   npm.cmd run dev
+
+QUALITY CHECKS
+   npm run typecheck
+   npm run lint
+   npm test
+
+PRODUCTION SERVER
+   npm run build
+   npm run start
+
+Build before starting the production server. The build packages the server,
+static bundles, and public assets in .next/standalone.
+
+SAVED DATA
+Balances, positions, profiles, and competition records are browser-local.
+Changing the hostname or port creates a separate storage origin.
+No real funds are deposited, traded, or withdrawn.
+
+See README.md for features and commands.
+See docs/architecture.md for the application structure and limitations.

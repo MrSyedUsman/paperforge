@@ -1,0 +1,174 @@
+/* Comfortable typography and information hierarchy */
+:root {
+  --muted: #9aa7b6;
+  --line: #263340;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+body {
+  color: #f3f6fa;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.top { height: 76px; padding: 0 34px; gap: 48px; }
+.logo { font-size: 22px; }
+.logo > i { width: 38px; height: 38px; border-radius: 11px; font-size: 20px; }
+.top nav { gap: 32px; }
+.top nav button { font-size: 14px; font-weight: 520; }
+.top nav b { font-size: 10px; padding: 2px 6px; }
+.top-right { gap: 12px; }
+.sim { font-size: 11px; padding: 8px 12px; letter-spacing: .25px; }
+.global-search { min-width: 245px; padding: 10px 13px; font-size: 14px; color: #9aa7b6; }
+.global-search kbd { font-size: 10px; }
+.mini-balance { padding-left: 18px; }
+.mini-balance small { font-size: 10px; color: #8c99a8; }
+.mini-balance b { font-size: 14px; }
+.avatar { width: 40px; height: 40px; font-size: 12px; }
+
+.page { max-width: 1280px; padding-left: 30px; padding-right: 30px; }
+.hero { min-height: 500px; padding: 75px 0 62px; gap: 80px; }
+.eyebrow { font-size: 11px; letter-spacing: 1.5px; color: #9aa6b5; }
+.hero h1 { font-size: 58px; line-height: 1.07; margin: 20px 0; }
+.hero p { font-size: 18px; line-height: 1.65; color: #a8b4c2; max-width: 610px; }
+.hero-actions { margin: 30px 0 25px; }
+.primary, .secondary { height: 48px; padding: 0 22px; font-size: 14px; border-radius: 7px; }
+.trust { font-size: 13px; color: #8795a5; gap: 28px; }
+.hero-card { padding: 30px; }
+.hero-card > span { font-size: 11px; color: #94a1b0; }
+.hero-value { font-size: 39px; }
+.mini-stats small { font-size: 12px; color: #8996a5; }
+.mini-stats b { font-size: 16px; }
+
+.section { padding: 52px 0; }
+.section-head { margin-bottom: 26px; }
+.section-head h2 { font-size: 30px; margin-top: 10px; }
+.section-head > button { font-size: 13px; padding: 10px 14px; }
+.watch-grid { gap: 16px; }
+.watch-grid article { padding: 21px; border-radius: 11px; }
+.coin { width: 36px; height: 36px; }
+.coin-line { gap: 12px; }
+.coin-line b, .pair-name > b { font-size: 14px; }
+.coin-line small, .pair-name small, .modal-pair small, .positions-table small {
+  color: #8391a1;
+  font-size: 11px;
+  margin-top: 4px;
+}
+.watch-grid article > strong { font-size: 24px; }
+.watch-bottom > span { font-size: 13px; }
+.card-trade { padding-top: 14px; color: #a0adba; font-size: 12px; }
+.market-tabs { height: 43px; gap: 28px; }
+.market-tabs button { font-size: 13px; }
+.market-table { margin-top: 18px; }
+.trow { min-height: 66px; padding: 15px 18px; font-size: 13px; }
+.trow.labels { color: #8593a2; font-size: 11px; letter-spacing: .55px; }
+.trade-link { font-size: 13px; }
+
+.ticker-strip { height: 42px; padding: 0 28px; }
+.ticker-strip span { padding: 0 22px; font-size: 11px; }
+.terminal { grid-template-columns: minmax(0, 1fr) 400px; }
+.pair-head { height: 90px; padding: 0 24px; gap: 38px; }
+.pair-select { min-width: 225px; }
+.pair-select b { font-size: 16px; }
+.pair-select small, .pair-head > div small { margin-top: 5px; color: #8b98a7; font-size: 11px; }
+.pair-select + div b { font-size: 21px; }
+.pair-head .live-price b { font-size: 21px; line-height: 1.1; }
+.pair-head > div b { font-size: 14px; }
+.big-star { font-size: 27px; }
+.chart-nav { height: 48px; padding: 0 20px; gap: 8px; color: #8c99a7; font-size: 12px; }
+.chart-nav button { padding: 7px 9px; font-size: 12px; }
+.big-chart { height: 410px; }
+.big-chart svg { top: 78px; height: 250px; }
+.ohlc { top: 17px; left: 20px; color: #8592a1; font-size: 11px; }
+.live-tag { padding: 5px 8px; font-size: 11px; }
+
+.side-tabs { height: 60px; padding: 0 18px; }
+.side-tabs button { font-size: 16px; }
+.order-content { padding: 22px; }
+.order-types { padding: 4px; }
+.order-types button { padding: 10px; font-size: 13px; }
+.available { margin: 22px 0; font-size: 13px; }
+.order-content label { margin-top: 17px; }
+.order-content label > span { margin-bottom: 9px; color: #9aa7b5; font-size: 13px; }
+.order-content label > div { height: 50px; padding: 0 14px; }
+.order-content input { font-size: 16px; }
+.order-content label b { font-size: 11px; }
+.quick { gap: 7px; margin: 9px 0 22px; }
+.quick button { padding: 8px; font-size: 11px; }
+.leverage { font-size: 13px; }
+.leverage b { font-size: 14px; }
+.range { margin: 18px 0; }
+.calc { padding: 16px 0; gap: 12px; }
+.calc span { color: #94a1b0; font-size: 12px; }
+.calc b { font-size: 12px; }
+.submit { height: 50px; margin-top: 19px; border-radius: 7px; font-size: 16px; }
+.order-content p { margin-top: 12px; color: #84919f; font-size: 11px; }
+
+.panel-title { height: 58px; padding: 0 22px; }
+.panel-title h3 { font-size: 14px; }
+.panel-title h3 i { font-size: 10px; }
+.panel-title span { color: #83909f; font-size: 11px; }
+.pos-row { min-height: 58px; padding: 14px 22px; font-size: 12px; }
+.pos-row.labels { color: #8592a1; font-size: 10px; letter-spacing: .4px; text-transform: uppercase; }
+.pos-row button { padding: 7px 12px; font-size: 11px; }
+.empty-pos { height: 160px; }
+.empty-pos b { font-size: 14px; }
+.empty-pos span { font-size: 11px; }
+
+.profile-id h1 { font-size: 32px; }
+.profile-id p { color: #929fae; font-size: 14px; }
+.form-grid label { font-size: 12px; }
+.form-grid input, .form-grid select { height: 44px; font-size: 14px; }
+.account-grid article { padding: 22px; }
+.account-grid span { font-size: 12px; }
+.account-grid b { font-size: 24px; }
+.account-grid small { font-size: 11px; }
+.faucet-card { padding: 19px 22px; }
+.faucet-card small { font-size: 11px; }
+.faucet-card > span b { font-size: 13px; }
+.faucet-card > button { padding: 10px 16px; font-size: 13px; }
+.history-list > div { padding: 15px 18px; font-size: 13px; }
+.history-list small { font-size: 11px; }
+
+.market-modal { width: min(720px, calc(100vw - 24px)); }
+.modal-search { height: 68px; padding: 0 20px; font-size: 17px; }
+.modal-search input { font-size: 16px; }
+.modal-search button { font-size: 10px; }
+.modal-labels { padding-top: 12px; padding-bottom: 12px; font-size: 11px; }
+.modal-list > div { padding: 11px 18px; font-size: 13px; }
+.toast { padding: 14px 18px; font-size: 13px; }
+footer { height: 60px; padding: 0 30px; color: #7f8c9b; font-size: 11px; }
+
+@media (max-width: 1100px) {
+  .terminal { grid-template-columns: minmax(0, 1fr) 360px; }
+  .top { gap: 24px; }
+  .top nav { gap: 20px; }
+  .sim { display: none; }
+}
+
+@media (max-width: 700px) {
+  body { font-size: 14px; }
+  .top { height: 64px; }
+  .logo { font-size: 18px; }
+  .logo > i { width: 34px; height: 34px; }
+  .page { padding-left: 18px; padding-right: 18px; }
+  .hero { padding: 50px 0; }
+  .hero h1 { font-size: 42px; }
+  .hero p { font-size: 16px; }
+  .section { padding: 38px 0; }
+  .section-head h2 { font-size: 25px; }
+  .terminal { display: block; }
+  .pair-head { height: 82px; padding: 0 16px; }
+  .pair-select { min-width: 0; }
+  .chart-nav { overflow-x: auto; }
+  .big-chart { height: 330px; }
+  .order-content { padding: 20px; }
+  .account-grid { grid-template-columns: 1fr; }
+  .pos-row { min-width: 820px; }
+  .market-modal { max-height: 86vh; }
+  .modal-list { max-height: calc(86vh - 101px); }
+  footer { font-size: 10px; }
+}
