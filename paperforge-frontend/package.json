@@ -31,5 +31,11 @@
     "typescript": "5.9.3"
   },
   "type": "module",
-  "displayName": "PaperForge Futures"
+  "displayName": "PaperForge Futures",
+  "allowScripts": {
+    "@firebase/util@1.15.3": true,
+    "protobufjs@7.6.6": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.11.1": true
+  }
 }

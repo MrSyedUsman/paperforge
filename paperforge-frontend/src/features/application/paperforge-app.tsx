@@ -1,5 +1,7 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useAuth } from "@/features/auth/auth-provider";
+import type { ApiUser } from "@/features/auth/api-client";
 import type { Pos } from "@/features/account/types";
 import { useStoredAccount } from "@/features/account/use-stored-account";
 import { accountMetrics, priceFor, validateOrder, createPosition, closePosition, liquidatePosition } from "@/features/account/engine";
@@ -15,7 +17,8 @@ import { Leaderboards } from "@/features/leaderboards/leaderboards";
 import { MarketsView } from "@/features/markets/markets-view";
 import { MarketModal } from "@/features/markets/market-modal";
 import type { Market } from "@/lib/market-data/markets";
-export function PaperForgeApp() {
+export function PaperForgeApp({ authUser }: { authUser: ApiUser }) {
+  const { signOut } = useAuth();
   const [view, setView] = useState<
       | "Home"
       | "Markets"
@@ -46,8 +49,16 @@ export function PaperForgeApp() {
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
   const liquidatedRef = useRef(new Set<number>());
   const { balance, setBalance, favorites, setFavorites, recent, setRecent, positions, setPositions,
-    history, setHistory, activity, setActivity, profile, setProfile, claimAt, setClaimAt,
+    history, setHistory, activity, setActivity, profile: storedProfile, setProfile, claimAt, setClaimAt,
     selectedPair, setSelectedPair } = useStoredAccount(note);
+  const profile = useMemo(() => ({
+    ...storedProfile,
+    name: authUser.displayName || storedProfile.name,
+    username: authUser.username || storedProfile.username,
+    avatar: authUser.displayName
+      ? authUser.displayName.split(" ").map((x) => x[0]).slice(0, 2).join("").toUpperCase()
+      : storedProfile.avatar,
+  }), [storedProfile, authUser]);
   const { markets, quotes, feed, catalogueError, lastUpdate, retry } = useMarketFeed();
   const price = useCallback((pair: string) => priceFor(quotes, pair), [quotes]);
   useEffect(() => {
@@ -279,6 +290,11 @@ export function PaperForgeApp() {
             <small>Paper equity</small>
             <b>${equity.toFixed(2)}</b>
           </button>
+          <span className="mini-balance">
+            <small>Signed in as</small>
+            <b>@{profile.username}</b>
+          </span>
+          <button className="signout" onClick={signOut}>Sign out</button>
           <button
             className="avatar"
             aria-label="Open profile"
