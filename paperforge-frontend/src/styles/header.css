@@ -1,0 +1,197 @@
+/* Header adapts independently of the screen content. */
+.top {
+  display: grid;
+  grid-template-areas: "brand navigation actions";
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0 clamp(12px, 1.2vw, 24px);
+  height: auto;
+  min-height: 88px;
+  padding: 12px clamp(12px, 1.8vw, 28px);
+}
+.top > .logo { grid-area: brand; white-space: nowrap; }
+.top > nav {
+  grid-area: navigation;
+  display: flex;
+  justify-content: center;
+  height: auto;
+  min-width: 0;
+  gap: 4px;
+  align-self: center;
+  align-items: center;
+  justify-self: center;
+  padding: 4px;
+  border: 1px solid #21372f;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #101d20, #0b151a);
+  box-shadow: inset 0 1px 0 #ffffff04;
+}
+.top > nav button, .top > nav button:last-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  min-height: 40px;
+  height: auto;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #94a8ad;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease;
+}
+.top > nav button:hover {
+  color: #d2ece3;
+  background: #39d8a00b;
+  border-color: #39d8a014;
+}
+.top > nav button.active {
+  color: #a8f5d9;
+  border-color: #39d8a04d;
+  background: linear-gradient(135deg, #39d8a027, #39d8a010);
+  box-shadow: inset 0 1px 0 #9affd91a, 0 2px 10px #00000026;
+}
+.top > nav button.active::after { display: none; content: none; }
+.top > nav button b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 19px;
+  height: 19px;
+  margin: 0;
+  padding: 0 5px;
+  border-radius: 6px;
+  background: #243338;
+  color: #a7bec2;
+  font: 700 10px var(--mono);
+}
+.top > nav button.active b { background: #39d8a029; color: #b8f8df; }
+.top > nav button small {
+  margin: 0;
+  padding: 3px 5px;
+  border: 1px solid #c6973b40;
+  border-radius: 5px;
+  background: #c6973b0e;
+  color: #edc66b;
+  font: 600 8px var(--mono);
+  letter-spacing: .03em;
+}
+.mobile-nav button.active::before { display: none; content: none; }
+.mobile-nav button.active {
+  color: #a8f5d9;
+  background: linear-gradient(180deg, #39d8a01c, #39d8a008);
+  box-shadow: inset 0 0 0 1px #39d8a033;
+  border-radius: 10px;
+}
+.mobile-nav button { transition: color 160ms ease, background-color 160ms ease; }
+.mobile-nav button.active i { color: #52e2b0; }
+.top-right {
+  grid-area: actions;
+  display: flex;
+  min-width: 0;
+  margin-left: 0;
+  gap: 10px;
+}
+.top .sim {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 235px;
+  white-space: nowrap;
+}
+.top .sim > i { flex-shrink: 0; }
+.top .feed-text { overflow: hidden; text-overflow: ellipsis; }
+.top .global-search {
+  flex: 1 1 180px;
+  min-width: 42px;
+  max-width: 220px;
+  min-height: 42px;
+}
+.top .global-search > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.top .global-search > kbd { flex-shrink: 0; }
+.account-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.top .mini-balance {
+  display: flex;
+  min-width: 0;
+  max-width: 155px;
+  padding-left: 12px;
+  white-space: nowrap;
+}
+.top .mini-balance b {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.top .signout { flex-shrink: 0; min-height: 40px; white-space: nowrap; }
+.top .avatar { flex-shrink: 0; }
+
+@media (max-width: 1800px) {
+  .top .sim { display: none; }
+}
+@media (max-width: 1600px) {
+  .top .global-search { flex: 0 0 42px; padding: 0; justify-content: center; }
+  .top .global-search > span, .top .global-search > kbd { display: none; }
+  .top > nav { gap: 3px; }
+  .top .mini-balance { max-width: 125px; padding-left: 10px; }
+}
+@media (max-width: 1360px) {
+  .top {
+    grid-template-areas: "brand actions" "navigation navigation";
+    grid-template-columns: auto minmax(0, 1fr);
+    padding-bottom: 0;
+  }
+  .top-right { justify-content: flex-end; }
+  .top > nav {
+    min-height: 48px;
+    justify-content: flex-start;
+    gap: 4px;
+    justify-self: start;
+    margin: 8px 0;
+  }
+}
+@media (max-width: 760px) {
+  .top { grid-template-areas: "brand search" "account account"; grid-template-columns: minmax(0, 1fr) auto; row-gap: 10px; padding: 10px 12px; }
+  .top > nav { display: none; }
+  .top-right { display: contents; }
+  .top .global-search { grid-area: search; width: 42px; height: 42px; }
+  .account-controls {
+    grid-area: account;
+    min-width: 0;
+    width: 100%;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+  .top .mini-balance { flex: 1 1 0; max-width: none; padding-left: 0; border-left: 0; text-align: left; }
+  .top .mini-balance small { font-size: 9px; }
+  .top .mini-balance b { font-size: 12px; }
+  .top .signout { padding: 7px 9px; }
+  .mobile-nav { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; padding: 5px 5px calc(5px + env(safe-area-inset-bottom)); }
+  .mobile-nav span { overflow-wrap: anywhere; }
+}
+@media (max-width: 380px) {
+  .account-controls { gap: 6px; }
+  .top .mini-balance b { font-size: 11px; }
+  .top .signout { padding: 7px; font-size: 10px; }
+  .mobile-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); min-height: 108px; }
+  .mobile-nav button { min-height: 50px; }
+  body { padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .top > nav button, .mobile-nav button { transition: none; }
+}

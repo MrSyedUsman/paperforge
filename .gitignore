@@ -1,23 +1,22 @@
 # Dependencies
-/node_modules/
+node_modules/
 
-# Generated output and caches
-/.next/
-/out/
-/dist/
-/coverage/
-/.cache/
+# Build output and caches
+.next/
+.cache/
+dist/
+out/
+coverage/
 *.tsbuildinfo
 next-env.d.ts
 
-# Local credentials and environment
-.env*
+# Secrets
+.env
+.env.*
+!.env.example
 *.pem
+serviceAccount*.json
+*-firebase-adminsdk-*.json
 
-# Logs and operating-system files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-.DS_Store
-Thumbs.db
+# Logs
+*.log

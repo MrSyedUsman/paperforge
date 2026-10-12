@@ -1,0 +1,326 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\munim\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.16.0
+2 info using node@v24.18.0
+3 silly config load:file:C:\Users\munim\AppData\Roaming\npm\node_modules\npm\npmrc
+4 silly config load:file:D:\paper-forge\paperforge\.npmrc
+5 silly config load:file:C:\Users\munim\.npmrc
+6 silly config load:file:D:\paper-forge\paperforge\etc\npmrc
+7 verbose title npm uninstall firebase
+8 verbose argv "uninstall" "--prefix" "../paperforge" "firebase"
+9 verbose logfile logs-max:10 dir:D:\paper-forge\paperforge-backend\.cache\npm\_logs\2026-10-07T18_38_38_628Z-
+10 verbose logfile D:\paper-forge\paperforge-backend\.cache\npm\_logs\2026-10-07T18_38_38_628Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:2348810240 maxSize:587202560 maxEntrySize:293601280
+13 silly idealTree buildDeps
+14 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\ai' ]
+15 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics' ]
+16 silly reify mark retired [
+16 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics-compat'
+16 silly reify ]
+17 silly reify mark retired [
+17 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics-types'
+17 silly reify ]
+18 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app' ]
+19 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check' ]
+20 silly reify mark retired [
+20 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-compat'
+20 silly reify ]
+21 silly reify mark retired [
+21 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-interop-types'
+21 silly reify ]
+22 silly reify mark retired [
+22 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-types'
+22 silly reify ]
+23 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-compat' ]
+24 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-types' ]
+25 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth' ]
+26 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-compat' ]
+27 silly reify mark retired [
+27 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-interop-types'
+27 silly reify ]
+28 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-types' ]
+29 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\component' ]
+30 silly reify mark retired [
+30 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\data-connect'
+30 silly reify ]
+31 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database' ]
+32 silly reify mark retired [
+32 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database-compat'
+32 silly reify ]
+33 silly reify mark retired [
+33 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database-types'
+33 silly reify ]
+34 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore' ]
+35 silly reify mark retired [
+35 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore-compat'
+35 silly reify ]
+36 silly reify mark retired [
+36 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore-types'
+36 silly reify ]
+37 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions' ]
+38 silly reify mark retired [
+38 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions-compat'
+38 silly reify ]
+39 silly reify mark retired [
+39 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions-types'
+39 silly reify ]
+40 silly reify mark retired [
+40 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations'
+40 silly reify ]
+41 silly reify mark retired [
+41 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations-compat'
+41 silly reify ]
+42 silly reify mark retired [
+42 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations-types'
+42 silly reify ]
+43 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\logger' ]
+44 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging' ]
+45 silly reify mark retired [
+45 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging-compat'
+45 silly reify ]
+46 silly reify mark retired [
+46 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging-interop-types'
+46 silly reify ]
+47 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance' ]
+48 silly reify mark retired [
+48 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance-compat'
+48 silly reify ]
+49 silly reify mark retired [
+49 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance-types'
+49 silly reify ]
+50 silly reify mark retired [
+50 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config'
+50 silly reify ]
+51 silly reify mark retired [
+51 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config-compat'
+51 silly reify ]
+52 silly reify mark retired [
+52 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config-types'
+52 silly reify ]
+53 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage' ]
+54 silly reify mark retired [
+54 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage-compat'
+54 silly reify ]
+55 silly reify mark retired [
+55 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage-types'
+55 silly reify ]
+56 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\util' ]
+57 silly reify mark retired [
+57 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\webchannel-wrapper'
+57 silly reify ]
+58 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\grpc-js' ]
+59 silly reify mark retired [
+59 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\proto-loader',
+59 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types',
+59 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types.cmd',
+59 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types.ps1'
+59 silly reify ]
+60 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\aspromise' ]
+61 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\base64' ]
+62 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\codegen' ]
+63 silly reify mark retired [
+63 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\eventemitter'
+63 silly reify ]
+64 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\fetch' ]
+65 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\float' ]
+66 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\path' ]
+67 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\pool' ]
+68 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\utf8' ]
+69 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\ansi-regex' ]
+70 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\cliui' ]
+71 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\faye-websocket' ]
+72 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\firebase' ]
+73 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\get-caller-file' ]
+74 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\http-parser-js' ]
+75 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\idb' ]
+76 silly reify mark retired [
+76 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\is-fullwidth-code-point'
+76 silly reify ]
+77 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\lodash.camelcase' ]
+78 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\long' ]
+79 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\protobufjs' ]
+80 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\re2js' ]
+81 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\require-directory' ]
+82 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\safe-buffer' ]
+83 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\string-width' ]
+84 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\strip-ansi' ]
+85 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\web-vitals' ]
+86 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\websocket-driver' ]
+87 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\websocket-extensions' ]
+88 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\wrap-ansi' ]
+89 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\y18n' ]
+90 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\yargs' ]
+91 silly reify mark retired [ 'D:\\paper-forge\\paperforge\\node_modules\\yargs-parser' ]
+92 silly reify moves {
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\ai': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.ai-FcVt5Qrf',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.analytics-QtUPmCA0',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.analytics-compat-ec3Opqzw',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\analytics-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.analytics-types-nCFC93UP',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-bGGskwAb',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-check-3OmUiHf4',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-check-compat-jpQHYoP5',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-interop-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-check-interop-types-MgazaLai',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-check-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-check-types-L5ECridZ',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-compat-yJ923TCp',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\app-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.app-types-55ho8EDH',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.auth-XsIS7k4s',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.auth-compat-8Y3vS3Ox',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-interop-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.auth-interop-types-qBs5yWxj',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\auth-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.auth-types-wVbrutFC',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\component': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.component-6cZNR3V7',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\data-connect': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.data-connect-iWOtEPJG',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.database-SBOb9wM1',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.database-compat-wDTAyiVg',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\database-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.database-types-gV0Ty1iq',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.firestore-IqrimcVr',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.firestore-compat-5cft2HLa',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\firestore-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.firestore-types-baQmBBSj',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.functions-HzHroyNL',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.functions-compat-9a5HaJ6F',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\functions-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.functions-types-5bkfJRm9',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.installations-nNj4oHDN',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.installations-compat-b60ROhMr',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\installations-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.installations-types-SEr7SR2Q',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\logger': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.logger-kYqK6FQj',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.messaging-Mxfms4Mj',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.messaging-compat-tHI29mYu',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\messaging-interop-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.messaging-interop-types-wqLxNOKR',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.performance-C35i7Kvp',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.performance-compat-Xuk7V9sI',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\performance-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.performance-types-tZJ7KVo3',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.remote-config-ir4Xxh12',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.remote-config-compat-zBPT5ZAx',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\remote-config-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.remote-config-types-HVUsmCJV',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.storage-A19wc4fO',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage-compat': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.storage-compat-7bY0ymmn',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\storage-types': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.storage-types-genYCQY9',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\util': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.util-keodg4xd',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\webchannel-wrapper': 'D:\\paper-forge\\paperforge\\node_modules\\@firebase\\.webchannel-wrapper-XLUQXkRc',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\grpc-js': 'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\.grpc-js-9RKaI9a3',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\proto-loader': 'D:\\paper-forge\\paperforge\\node_modules\\@grpc\\.proto-loader-wWoRci90',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types': 'D:\\paper-forge\\paperforge\\node_modules\\.bin\\.proto-loader-gen-types-1U4Nxsse',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types.cmd': 'D:\\paper-forge\\paperforge\\node_modules\\.bin\\.proto-loader-gen-types.cmd-tv6gwBHs',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\.bin\\proto-loader-gen-types.ps1': 'D:\\paper-forge\\paperforge\\node_modules\\.bin\\.proto-loader-gen-types.ps1-QxO8PeX9',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\aspromise': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.aspromise-6pYOImfQ',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\base64': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.base64-3IFXpmrm',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\codegen': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.codegen-Ik6uqlx0',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\eventemitter': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.eventemitter-o8ppNlhy',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\fetch': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.fetch-I4YOF0Hw',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\float': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.float-51jcYoch',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\path': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.path-qqR7AP3V',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\pool': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.pool-1RakqFxW',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\utf8': 'D:\\paper-forge\\paperforge\\node_modules\\@protobufjs\\.utf8-6gmykNnN',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\ansi-regex': 'D:\\paper-forge\\paperforge\\node_modules\\.ansi-regex-xUsu1CFw',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\cliui': 'D:\\paper-forge\\paperforge\\node_modules\\.cliui-uXFEbuod',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\faye-websocket': 'D:\\paper-forge\\paperforge\\node_modules\\.faye-websocket-JFz4Nj3q',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\firebase': 'D:\\paper-forge\\paperforge\\node_modules\\.firebase-aIUmcyyG',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\get-caller-file': 'D:\\paper-forge\\paperforge\\node_modules\\.get-caller-file-OhfIS1PT',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\http-parser-js': 'D:\\paper-forge\\paperforge\\node_modules\\.http-parser-js-rvWW6L6m',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\idb': 'D:\\paper-forge\\paperforge\\node_modules\\.idb-4gnEN20Q',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\is-fullwidth-code-point': 'D:\\paper-forge\\paperforge\\node_modules\\.is-fullwidth-code-point-uVeIXXUa',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\lodash.camelcase': 'D:\\paper-forge\\paperforge\\node_modules\\.lodash.camelcase-Tx5hkgGi',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\long': 'D:\\paper-forge\\paperforge\\node_modules\\.long-81Y3Ce74',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\protobufjs': 'D:\\paper-forge\\paperforge\\node_modules\\.protobufjs-GMfnrxvj',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\re2js': 'D:\\paper-forge\\paperforge\\node_modules\\.re2js-XK0ARM9Q',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\require-directory': 'D:\\paper-forge\\paperforge\\node_modules\\.require-directory-svG2YQ3L',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\safe-buffer': 'D:\\paper-forge\\paperforge\\node_modules\\.safe-buffer-C5punxip',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\string-width': 'D:\\paper-forge\\paperforge\\node_modules\\.string-width-nnS3VBrJ',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\strip-ansi': 'D:\\paper-forge\\paperforge\\node_modules\\.strip-ansi-UpemVCIz',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\web-vitals': 'D:\\paper-forge\\paperforge\\node_modules\\.web-vitals-u7dipGJs',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\websocket-driver': 'D:\\paper-forge\\paperforge\\node_modules\\.websocket-driver-IMXwqGz8',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\websocket-extensions': 'D:\\paper-forge\\paperforge\\node_modules\\.websocket-extensions-zTvOw5VB',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\wrap-ansi': 'D:\\paper-forge\\paperforge\\node_modules\\.wrap-ansi-NHWuXw2G',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\y18n': 'D:\\paper-forge\\paperforge\\node_modules\\.y18n-1IWNdwbq',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\yargs': 'D:\\paper-forge\\paperforge\\node_modules\\.yargs-mSjkQZbo',
+92 silly reify   'D:\\paper-forge\\paperforge\\node_modules\\yargs-parser': 'D:\\paper-forge\\paperforge\\node_modules\\.yargs-parser-lM2PhUtY'
+92 silly reify }
+93 silly REMOVE node_modules/yargs-parser
+94 silly REMOVE node_modules/yargs
+95 silly REMOVE node_modules/y18n
+96 silly REMOVE node_modules/wrap-ansi
+97 silly REMOVE node_modules/websocket-extensions
+98 silly REMOVE node_modules/websocket-driver
+99 silly REMOVE node_modules/web-vitals
+100 silly REMOVE node_modules/strip-ansi
+101 silly REMOVE node_modules/string-width
+102 silly REMOVE node_modules/string-width/node_modules/emoji-regex
+103 silly REMOVE node_modules/safe-buffer
+104 silly REMOVE node_modules/require-directory
+105 silly REMOVE node_modules/re2js
+106 silly REMOVE node_modules/protobufjs
+107 silly REMOVE node_modules/long
+108 silly REMOVE node_modules/lodash.camelcase
+109 silly REMOVE node_modules/is-fullwidth-code-point
+110 silly REMOVE node_modules/idb
+111 silly REMOVE node_modules/http-parser-js
+112 silly REMOVE node_modules/get-caller-file
+113 silly REMOVE node_modules/firebase
+114 silly REMOVE node_modules/faye-websocket
+115 silly REMOVE node_modules/cliui
+116 silly REMOVE node_modules/ansi-regex
+117 silly REMOVE node_modules/@protobufjs/utf8
+118 silly REMOVE node_modules/@protobufjs/pool
+119 silly REMOVE node_modules/@protobufjs/path
+120 silly REMOVE node_modules/@protobufjs/float
+121 silly REMOVE node_modules/@protobufjs/fetch
+122 silly REMOVE node_modules/@protobufjs/eventemitter
+123 silly REMOVE node_modules/@protobufjs/codegen
+124 silly REMOVE node_modules/@protobufjs/base64
+125 silly REMOVE node_modules/@protobufjs/aspromise
+126 silly REMOVE node_modules/@grpc/proto-loader
+127 silly REMOVE node_modules/@grpc/grpc-js
+128 silly REMOVE node_modules/@firebase/webchannel-wrapper
+129 silly REMOVE node_modules/@firebase/util
+130 silly REMOVE node_modules/@firebase/storage-types
+131 silly REMOVE node_modules/@firebase/storage-compat
+132 silly REMOVE node_modules/@firebase/storage
+133 silly REMOVE node_modules/@firebase/remote-config-types
+134 silly REMOVE node_modules/@firebase/remote-config-compat
+135 silly REMOVE node_modules/@firebase/remote-config
+136 silly REMOVE node_modules/@firebase/performance-types
+137 silly REMOVE node_modules/@firebase/performance-compat
+138 silly REMOVE node_modules/@firebase/performance
+139 silly REMOVE node_modules/@firebase/messaging-interop-types
+140 silly REMOVE node_modules/@firebase/messaging-compat
+141 silly REMOVE node_modules/@firebase/messaging
+142 silly REMOVE node_modules/@firebase/logger
+143 silly REMOVE node_modules/@firebase/installations-types
+144 silly REMOVE node_modules/@firebase/installations-compat
+145 silly REMOVE node_modules/@firebase/installations
+146 silly REMOVE node_modules/@firebase/functions-types
+147 silly REMOVE node_modules/@firebase/functions-compat
+148 silly REMOVE node_modules/@firebase/functions
+149 silly REMOVE node_modules/@firebase/firestore-types
+150 silly REMOVE node_modules/@firebase/firestore-compat
+151 silly REMOVE node_modules/@firebase/firestore
+152 silly REMOVE node_modules/@firebase/database-types
+153 silly REMOVE node_modules/@firebase/database-compat
+154 silly REMOVE node_modules/@firebase/database
+155 silly REMOVE node_modules/@firebase/data-connect
+156 silly REMOVE node_modules/@firebase/component
+157 silly REMOVE node_modules/@firebase/auth-types
+158 silly REMOVE node_modules/@firebase/auth-interop-types
+159 silly REMOVE node_modules/@firebase/auth-compat
+160 silly REMOVE node_modules/@firebase/auth
+161 silly REMOVE node_modules/@firebase/app-types
+162 silly REMOVE node_modules/@firebase/app-compat
+163 silly REMOVE node_modules/@firebase/app-check-types
+164 silly REMOVE node_modules/@firebase/app-check-interop-types
+165 silly REMOVE node_modules/@firebase/app-check-compat
+166 silly REMOVE node_modules/@firebase/app-check
+167 silly REMOVE node_modules/@firebase/app
+168 silly REMOVE node_modules/@firebase/analytics-types
+169 silly REMOVE node_modules/@firebase/analytics-compat
+170 silly REMOVE node_modules/@firebase/analytics
+171 silly REMOVE node_modules/@firebase/ai
+172 warn allow-scripts 2 packages have install scripts not yet covered by allowScripts:
+172 warn allow-scripts   sharp@0.34.5 (install: (install scripts present))
+172 warn allow-scripts   unrs-resolver@1.11.1 (install: (install scripts present))
+172 warn allow-scripts
+172 warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+173 verbose cwd D:\paper-forge\paperforge-backend
+174 verbose os Windows_NT 10.0.19045
+175 verbose node v24.18.0
+176 verbose npm  v11.16.0
+177 verbose exit 0
+178 info ok
