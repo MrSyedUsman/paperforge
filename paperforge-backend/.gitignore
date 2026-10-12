@@ -4,3 +4,5 @@
 *.tsbuildinfo
 serviceAccount*.json
 *-firebase-adminsdk-*.json
+
+/.cache/
