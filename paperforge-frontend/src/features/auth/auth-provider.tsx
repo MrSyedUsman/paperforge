@@ -7,6 +7,7 @@ const TOKEN_KEY = "paperforge-auth-token";
 type AuthState = {
   user: ApiUser | null;
   loading: boolean;
+  accessToken: string | null;
   login: (username: string, password: string) => Promise<string>;
   signOut: () => void;
 };
@@ -32,11 +33,12 @@ function writeToken(token: string | null) {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<ApiUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Restore the session after a refresh.
     const token = readToken();
-    (token ? authApi.me(token).then(setUser).catch(() => writeToken(null)) : Promise.resolve())
+    (token ? authApi.me(token).then(user => { setAccessToken(token); setUser(user); }).catch(() => writeToken(null)) : Promise.resolve())
       .finally(() => setLoading(false));
   }, []);
 
@@ -45,6 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const result = await authApi.login(username, password);
       writeToken(result.token);
+      setAccessToken(result.token);
       setUser(result.user);
       return "";
     } catch (cause) {
@@ -54,9 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = useCallback(() => {
     writeToken(null);
+    setAccessToken(null);
     setUser(null);
   }, []);
 
-  const value = useMemo(() => ({ user, loading, login, signOut }), [user, loading, login, signOut]);
+  const value = useMemo(() => ({ user, loading, accessToken, login, signOut }), [user, loading, accessToken, login, signOut]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

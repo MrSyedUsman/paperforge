@@ -1,5 +1,4 @@
-export const DEFAULT_MAINTENANCE_MARGIN_RATE = 0.005;
-export const DEFAULT_LIQUIDATION_FEE_RATE = 0.001;
+export { DEFAULT_MAINTENANCE_MARGIN_RATE, DEFAULT_LIQUIDATION_FEE_RATE } from "@paperforge/simulation";
 
 export type PositionSide = "Long" | "Short";
 
@@ -18,27 +17,7 @@ const positive = (value: unknown, fallback = 0) => {
   return Number.isFinite(number) && number > 0 ? number : fallback;
 };
 
-export function calculateLiquidationPrice({
-  entry,
-  side,
-  leverage,
-  margin,
-  notional,
-  maintenanceMarginRate = DEFAULT_MAINTENANCE_MARGIN_RATE,
-  liquidationFeeRate = DEFAULT_LIQUIDATION_FEE_RATE,
-}: LiquidationInput) {
-  const safeEntry = positive(entry);
-  const safeMargin = positive(margin, 1);
-  const safeNotional = positive(notional, safeMargin * positive(leverage, 1));
-  const effectiveLeverage = Math.max(1, safeNotional / safeMargin);
-  if (!safeEntry || (side !== "Long" && side !== "Short")) return 0;
-  const reserveRate = Math.max(
-    0,
-    Number(maintenanceMarginRate) + Number(liquidationFeeRate),
-  );
-  const adverseMove = Math.max(0.0001, 1 / effectiveLeverage - reserveRate);
-  return safeEntry * (side === "Long" ? 1 - adverseMove : 1 + adverseMove);
-}
+export { calculateLiquidationPrice, settleIsolatedLiquidation } from "@paperforge/simulation";
 
 export function isLiquidated(mark: number, liquidation: number, side: PositionSide) {
   const safeMark = positive(mark);
@@ -69,33 +48,6 @@ export function liquidationRiskStatus(distance: number) {
   if (value <= 3) return "High";
   if (value <= 7) return "Elevated";
   return "Safe";
-}
-
-export function settleIsolatedLiquidation({
-  margin,
-  notional,
-  openFee = 0,
-  liquidationPrice,
-  liquidationFeeRate = DEFAULT_LIQUIDATION_FEE_RATE,
-}: {
-  margin: number;
-  notional: number;
-  openFee?: number;
-  liquidationPrice: number;
-  liquidationFeeRate?: number;
-}) {
-  const safeMargin = positive(margin);
-  const fee = Math.min(
-    safeMargin,
-    positive(notional) * Math.max(0, Number(liquidationFeeRate) || 0),
-  );
-  return {
-    executionPrice: positive(liquidationPrice),
-    marginLost: safeMargin,
-    liquidationFee: Math.round(fee * 100) / 100,
-    walletCredit: 0,
-    netPnl: Math.round((-safeMargin - Math.max(0, Number(openFee) || 0)) * 100) / 100,
-  };
 }
 
 export function findLiquidatedPositions<T extends {

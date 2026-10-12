@@ -86,11 +86,12 @@ separate store; copying source files does not transfer saved account data.
 ## Production runtime
 
 `next.config.ts` enables standalone output and strict CSS chunk ordering. The
-build produces `.next/standalone/server.js`. `scripts/prepare-standalone.mjs`
+build produces the monorepo standalone server under `.next/standalone/paperforge-frontend/`. `scripts/prepare-standalone.mjs`
 copies public assets and client bundles into that directory. `npm run start`
 launches the packaged Node.js server. `PORT` and `HOSTNAME` set its address.
 
-Cloud hosting and AI integration are not configured. Deployment scripts and
+Cloud hosting is not configured. Completed-trade AI reviews use the authenticated
+NestJS backend; see [AI trade reviews](ai-trade-review.md). Deployment scripts and
 shared server-side account persistence are future work.
 
 ## Verification

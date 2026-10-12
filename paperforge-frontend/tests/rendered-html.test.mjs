@@ -4,6 +4,8 @@ import { spawn } from "node:child_process";
 import { createServer } from "node:net";
 import { once } from "node:events";
 import { fileURLToPath } from "node:url";
+import path from "node:path";
+import { standaloneDirectory } from "../scripts/standalone-path.mjs";
 
 let child, baseUrl;
 let output = "";
@@ -16,7 +18,7 @@ before(async () => {
   const port = reservation.address().port;
   await new Promise(resolve => reservation.close(resolve));
   baseUrl = `http://127.0.0.1:${port}`;
-  child = spawn(process.execPath, [".next/standalone/server.js"], {
+  child = spawn(process.execPath, [path.join(standaloneDirectory, "server.js")], {
     cwd: root,
     env: { ...process.env, PORT: String(port), HOSTNAME: "127.0.0.1", NEXT_TELEMETRY_DISABLED: "1" },
     stdio: ["ignore", "pipe", "pipe"],
@@ -42,7 +44,7 @@ after(async () => {
   await exited;
 });
 
-test("renders the homepage, application metadata and styles through the production server", async () => {
+test("renders the authenticated application shell, metadata and styles through the production server", async () => {
   const response = await fetch(baseUrl);
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -50,8 +52,8 @@ test("renders the homepage, application metadata and styles through the producti
   assert.match(html, /<title>PaperForge Futures<\/title>/);
   assert.match(html, /<meta[^>]*name="description"[^>]*content="Practise crypto futures trading with virtual funds, live market data, and bot competitions\."/);
   assert.match(html, /PaperForge/);
-  assert.match(html, /Learn futures trading/);
-  assert.match(html, /Competitions/);
+  assert.match(html, /Loading|Sign in/);
+  assert.doesNotMatch(html, /Portfolio overview/);
   assert.match(html, /rel="icon"[^>]*href="\/icon\.svg/);
   const cssUrls = [...html.matchAll(/href="([^"\s]+\.css(?:\?[^"\s]*)?)"/g)].map(match => match[1]);
   assert.ok(cssUrls.length, "Application styles are bundled");

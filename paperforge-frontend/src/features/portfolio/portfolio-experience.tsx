@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { formatMarketPrice, type Market } from "@/lib/market-data/markets";
 import { Faucet } from "@/features/account/faucet";
 import { money } from "@/features/account/format";
+import type { ClosedPos } from "@/features/account/types";
+import { TradeReviewPanel } from "./trade-review-panel";
+import { tradeReviewSnapshot } from "./trade-review-api";
 import { TradeShareCard } from "./trade-share-card";
 export function PortfolioExperience(p: any) {
   const { account, positions, history, activity } = p;
   const [cardTrade, setCardTrade] = useState<any>(null);
+  const [reviewTrade, setReviewTrade] = useState<ClosedPos | null>(null);
+  const reviewTrigger = useRef<HTMLButtonElement | null>(null);
+  function closeReview() { setReviewTrade(null); reviewTrigger.current?.focus({ preventScroll: true }); }
   const profitable = history.filter((h: any) => h.pnl > 0).length,
     losing = history.filter((h: any) => h.pnl < 0).length,
     best = [...history].sort((a: any, b: any) => b.pnl - a.pnl)[0],
@@ -282,6 +288,11 @@ export function PortfolioExperience(p: any) {
                   <small>Closed</small>
                   <b>{h.closed}</b>
                 </span>
+                <span className="p3-history-actions">
+                <button className="p3-ai-review-button" onClick={(event) => { reviewTrigger.current = event.currentTarget; setReviewTrade(h); }}
+                  aria-label={`Review ${h.pair || h.symbol} ${h.side} trade with AI`} aria-expanded={reviewTrade?.id === h.id} aria-controls={reviewTrade?.id === h.id ? "ai-review-panel" : undefined}>
+                  <span aria-hidden="true">✦</span> Review with AI
+                </button>
                 <button
                   className="p3-trade-card-button"
                   onClick={() => setCardTrade(h)}
@@ -289,6 +300,7 @@ export function PortfolioExperience(p: any) {
                 >
                   ◫ Generate card
                 </button>
+                </span>
               </div>
             ))}
           </div>
@@ -306,6 +318,7 @@ export function PortfolioExperience(p: any) {
         This portfolio is a browser-local simulation. Values can be reset or
         modified locally and are not verified account records.
       </div>
+      {reviewTrade && <TradeReviewPanel key={JSON.stringify(tradeReviewSnapshot(reviewTrade))} trade={reviewTrade} history={history} onSelect={setReviewTrade} close={closeReview} />}
       {cardTrade && (
         <TradeShareCard
           trade={cardTrade}

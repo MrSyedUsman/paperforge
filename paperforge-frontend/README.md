@@ -10,13 +10,16 @@ and compete against simulated opponents. No real-money orders are placed.
 - Long and Short paper market orders with leverage, fees, and isolated liquidation.
 - Interactive price charts with multiple styles and time ranges.
 - Portfolio, trade history, activity, and downloadable trade cards.
+- On-demand Gemini reviews of completed normal trades, with evidence, a lesson, and a practice exercise.
 - Timed bot competitions with separate wallets, standings, and result cards.
 - Browser-local profiles and leaderboards with sample benchmark participants.
 - Virtual starting balance of $1,000 and a $50 faucet every six hours.
 
 ## Getting started
 
-Use Node.js 22.13.0 or newer. From the project directory:
+Use Node.js 22.13.0 or newer. Keep the frontend, backend, and `paperforge-shared`
+sibling directories together. Start the backend using its README, then run
+from the frontend directory:
 
 ```sh
 npm ci
@@ -79,6 +82,25 @@ npm run build
 npm run start
 ```
 
-The build packages `.next/standalone/server.js`, static bundles, and public
-assets. `PORT` and `HOSTNAME` configure the listening address. Deployment
+The build packages the standalone server, static bundles, and public assets.
+The server lives under `.next/standalone/paperforge-frontend/` for this monorepo;
+the packaging and start scripts resolve that location automatically. `PORT` and `HOSTNAME` configure the listening address. Deployment
 configuration is not included; the Node.js server can be packaged for Cloud Run.
+
+## Completed-trade AI review
+
+In Portfolio, select **Review with AI** on a closed position. The non-blocking
+review panel explains server-calculated facts and displays Gemini observations,
+a risk lesson, and a practical exercise. It supports switching trades, retry,
+Escape to close, and desktop/mobile layouts.
+
+Configure `GEMINI_API_KEY` and optionally `GEMINI_MODEL` on the NestJS backend.
+The key stays server-side. Reviews require an authenticated session and are
+cached per user and trade; failures display a retry state rather than fabricated
+feedback. The frontend sends only the necessary trade snapshot, not profile
+information or recorded PnL. Both apps use `paperforge-shared` for accounting.
+
+Browser-local trade records remain unverified. Funding, slippage, intentions,
+and market history are not inferred. Missing exit prices or opening fees are
+acknowledged. Competition AI, pre-trade coaching, and automatic trading are not
+included. See [AI review architecture](docs/ai-trade-review.md).
