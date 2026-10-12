@@ -276,37 +276,40 @@ export function PaperForgeApp({ authUser }: { authUser: ApiUser }) {
             aria-live="polite"
             onClick={() => feed !== "live" && retry()}
           >
-            <i /> {feedLabel}
+            <i /> <span className="feed-text">{feedLabel}</span>
           </button>
           <button
             className="global-search"
+            aria-label="Search markets"
             onClick={() => setMarketOpen(true)}
             aria-haspopup="dialog"
           >
             ⌕ <span>Search {markets.length || "futures"} markets</span>
             <kbd>⌘ K</kbd>
           </button>
-          <button className="mini-balance" onClick={() => setView("Portfolio")}>
-            <small>Paper equity</small>
-            <b>${equity.toFixed(2)}</b>
-          </button>
-          <span className="mini-balance">
-            <small>Signed in as</small>
-            <b>@{profile.username}</b>
-          </span>
-          <button className="signout" onClick={signOut}>Sign out</button>
-          <button
-            className="avatar"
-            aria-label="Open profile"
-            onClick={() => setView("Profile")}
-          >
-            {profile.avatar ||
-              profile.name
-                .split(" ")
-                .map((x) => x[0])
-                .slice(0, 2)
-                .join("")}
-          </button>
+          <div className="account-controls">
+            <button className="mini-balance" onClick={() => setView("Portfolio")} title={`Paper equity: $${equity.toFixed(2)}`}>
+              <small>Paper equity</small>
+              <b>${equity.toFixed(2)}</b>
+            </button>
+            <span className="mini-balance signed-in" title={`Signed in as @${profile.username}`}>
+              <small>Signed in as</small>
+              <b>@{profile.username}</b>
+            </span>
+            <button className="signout" onClick={signOut}>Sign out</button>
+            <button
+              className="avatar"
+              aria-label="Open profile"
+              onClick={() => setView("Profile")}
+            >
+              {profile.avatar ||
+                profile.name
+                  .split(" ")
+                  .map((x) => x[0])
+                  .slice(0, 2)
+                  .join("")}
+            </button>
+          </div>
         </div>
       </header>
       <nav className="mobile-nav" aria-label="Mobile navigation">
@@ -324,6 +327,7 @@ export function PaperForgeApp({ authUser }: { authUser: ApiUser }) {
           <button
             key={v}
             className={view === v ? "active" : ""}
+            aria-current={view === v ? "page" : undefined}
             onClick={() => setView(v)}
           >
             <i>
