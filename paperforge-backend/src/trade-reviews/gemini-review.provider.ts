@@ -18,6 +18,8 @@ function stripJsonFence(text:string):string {
 @Injectable()
 export class GeminiReviewProvider {
   private readonly logger=new Logger(GeminiReviewProvider.name);
+  /** A working model discovered after the configured one returned 404; reused so later requests skip the failed attempt. */
+  private resolvedModel?:string;
   constructor(@Inject(ConfigService) private readonly config: ConfigService) {}
   /** Gemma models cannot use JSON mode or response schemas. */
   private supportsStructuredOutput(model:string): boolean { return !model.startsWith('gemma'); }
@@ -40,16 +42,23 @@ export class GeminiReviewProvider {
       return pick;
     } catch { return undefined; }
   }
-  /** Logs the model IDs this key can actually call, so a 404 tells you which GEMINI_MODEL to set. Names only. */
-  private async logAvailableModels(key:string):Promise<void> {
+  /** Model IDs this key can call with generateContent. A 404 logs them so the right GEMINI_MODEL is visible. Names only. */
+  private async listModels(key:string):Promise<string[]> {
     try {
       const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=200',{headers:{'x-goog-api-key':key},signal:AbortSignal.timeout(5_000)});
-      if(!res.ok){this.logger.warn(`ListModels failed: HTTP ${res.status}`);return;}
+      if(!res.ok){this.logger.warn(`ListModels failed: HTTP ${res.status}`);return [];}
       const body=await res.json() as {models?:{name?:string;supportedGenerationMethods?:string[]}[]};
       const names=(body.models??[]).filter(m=>m.supportedGenerationMethods?.includes('generateContent'))
         .map(m=>m.name?.replace(/^models\//,'')).filter((n):n is string=>typeof n==='string'&&n.length>0);
       this.logger.warn(`Models available to this key for generateContent: ${names.join(', ')||'none'}`);
-    } catch { this.logger.warn('ListModels request failed'); }
+      return names;
+    } catch { this.logger.warn('ListModels request failed'); return []; }
+  }
+  /** Best stable Flash model from the key's own list: the "latest" alias, else the highest versioned flash. */
+  private pickFlashModel(names:string[]):string[] {
+    if(names.includes('gemini-flash-latest'))return ['gemini-flash-latest'];
+    const version=(n:string)=>Number(/^gemini-(\d+(?:\.\d+)?)-flash(?:-lite)?$/.exec(n)?.[1]);
+    return names.filter(n=>Number.isFinite(version(n))).sort((x,y)=>version(y)-version(x)||(x.includes('lite')?1:0)-(y.includes('lite')?1:0)).slice(0,2);
   }
   private request(model:string,key:string,facts:TradeFacts): Promise<Response> {
     const structured=this.supportsStructuredOutput(model);
@@ -68,17 +77,22 @@ export class GeminiReviewProvider {
     const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim();
     if(!key)throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'AI reviews are not configured on the server yet.'});
     try {
-      let model=this.model;
+      let model=this.resolvedModel??this.model;
       let response=await this.request(model,key,facts);
       if(response.status===404) {
         this.logger.warn(`Model "${model}" returned 404 (not found, or not supported for generateContent on this key)`);
-        await this.logAvailableModels(key);
-        const fallback=this.fallbackModel;
-        if(fallback!==model) {
-          this.logger.warn(`Retrying once with fallback model "${fallback}"`);
-          model=fallback;
+        const available=await this.listModels(key);
+        const candidates=[...new Set([this.fallbackModel,...this.pickFlashModel(available)])].filter(m=>m!==model&&(!available.length||available.includes(m)));
+        for(const candidate of candidates) {
+          this.logger.warn(`Retrying with model "${candidate}"`);
+          model=candidate;
           response=await this.request(model,key,facts);
+          if(response.status!==404)break;
         }
+      }
+      if(response.ok&&model!==this.resolvedModel&&model!==this.model) {
+        this.resolvedModel=model;
+        this.logger.warn(`Using model "${model}" instead of the configured "${this.model}". Set GEMINI_MODEL=${model} to make this permanent.`);
       }
       if(!response.ok) {
         const reason=await this.providerReason(response);
