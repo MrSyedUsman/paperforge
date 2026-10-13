@@ -68,10 +68,16 @@ jobs:
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       - uses: google-github-actions/setup-gcloud@v2
       - run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+      - name: Resolve backend URL
+        id: backend-url
+        run: |
+          URL="$(gcloud run services describe "$BACKEND_SERVICE" --region "$REGION" --format='value(status.url)')"
+          if [ -z "$URL" ]; then echo "Could not resolve the backend Cloud Run URL" >&2; exit 1; fi
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
       - name: Build and push image
         run: |
           docker build \
-            --build-arg NEXT_PUBLIC_API_URL="${{ needs.backend.outputs.url }}/api" \
+            --build-arg NEXT_PUBLIC_API_URL="${{ steps.backend-url.outputs.url }}/api" \
             -f paperforge-frontend/Dockerfile -t "$REGISTRY/frontend:${{ github.sha }}" .
           docker push "$REGISTRY/frontend:${{ github.sha }}"
       - id: deploy
