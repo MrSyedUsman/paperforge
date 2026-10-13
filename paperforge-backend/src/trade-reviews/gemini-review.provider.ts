@@ -5,10 +5,10 @@ import { REVIEW_SCHEMA, reviewPrompt, validateReview, type ReviewContent } from 
 export const REVIEW_TIMEOUT_MS=20_000;
 /** Gemma is much slower than Gemini Flash, so it gets longer before we switch to the fallback model. */
 export const GEMMA_TIMEOUT_MS=25_000;
-/** Default model when GEMINI_MODEL is unset (free on AI Studio; confirmed available to the production key). */
-const DEFAULT_MODEL='gemma-4-31b-it';
-/** Default for the one-time retry after a 404 on the primary model. */
-const DEFAULT_FALLBACK_MODEL='gemini-2.5-flash';
+/** Default model when GEMINI_MODEL is unset (free tier on AI Studio, fast, supports structured JSON output). */
+const DEFAULT_MODEL='gemini-2.5-flash';
+/** Default for the retry after a failure on the primary model: an alias that tracks Google's current Flash model. */
+const DEFAULT_FALLBACK_MODEL='gemini-flash-latest';
 const MODEL_PATTERN=/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/;
 const JSON_ONLY_SUFFIX=`
 
