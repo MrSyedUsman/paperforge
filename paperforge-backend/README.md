@@ -18,7 +18,7 @@ initial account. Add the Gemini settings locally:
 
 ```env
 GEMINI_API_KEY=your_private_key
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 GEMINI_FALLBACK_MODEL=gemini-flash-latest
 ```
 
