@@ -54,7 +54,8 @@ jobs:
             SEED_DISPLAY_NAME=${{ secrets.SEED_DISPLAY_NAME }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-            GEMINI_MODEL=${{ vars.GEMINI_MODEL || 'gemma-3-27b-it' }}
+            GEMINI_MODEL=${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+            GEMINI_FALLBACK_MODEL=${{ vars.GEMINI_FALLBACK_MODEL || 'gemini-2.5-flash' }}
 
   frontend:
     needs: backend
