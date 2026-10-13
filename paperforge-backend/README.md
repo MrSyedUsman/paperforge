@@ -56,7 +56,7 @@ simulation snapshots and do not certify balances or account history.
 - Concurrent identical requests share one Gemini operation.
 - Up to 500 successful reviews cached in process memory for 24 hours, keyed by
   authenticated user, normalized trade data, configured model, and prompt version.
-- Provider requests time out after 20 seconds; the frontend deadline is 30 seconds.
+- Provider requests time out after 25 seconds for Gemma and 20 seconds for Gemini models. A timeout, a 5xx, or a 404 retries once with `GEMINI_FALLBACK_MODEL`; the frontend deadline is 60 seconds.
 - Invalid input returns 400; missing/expired authentication returns 401; local
   rate limits return 429. Provider failures use sanitized 502/503/504 responses.
 - Failed responses are never cached or replaced with invented AI content.
