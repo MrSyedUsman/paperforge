@@ -7,7 +7,7 @@ export const REVIEW_TIMEOUT_MS=20_000;
 export class GeminiReviewProvider {
   constructor(@Inject(ConfigService) private readonly config: ConfigService) {}
   get model(): string {
-    const model=this.config.get<string>('GEMINI_MODEL')?.trim()||'gemini-flash-latest';
+    const model=this.config.get<string>('GEMINI_MODEL')?.trim()||'gemini-2.5-flash';
     if(!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/.test(model))throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'AI reviews are not configured correctly.'});
     return model;
   }
@@ -18,7 +18,9 @@ export class GeminiReviewProvider {
       const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.model)}:generateContent`,{
         method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(REVIEW_TIMEOUT_MS),
         body:JSON.stringify({contents:[{role:'user',parts:[{text:reviewPrompt(facts)}]}],
-          generationConfig:{temperature:0.2,maxOutputTokens:2048,responseMimeType:'application/json',responseSchema:REVIEW_SCHEMA}}),
+          generationConfig:{temperature:0.2,maxOutputTokens:2048,responseMimeType:'application/json',responseSchema:REVIEW_SCHEMA,
+            // 2.5 Flash "thinks" by default; thinking tokens would eat the small output budget.
+            ...(this.model.startsWith('gemini-2.5-flash')?{thinkingConfig:{thinkingBudget:0}}:{})}}),
       });
       if(!response.ok) {
         if(response.status===429)throw new ServiceUnavailableException({code:'AI_RATE_LIMIT',message:'The AI service is busy or its quota is exhausted. Please try again later.'});
