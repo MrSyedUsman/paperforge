@@ -97,7 +97,20 @@ jobs:
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
       - uses: google-github-actions/setup-gcloud@v2
-      - name: Allow the frontend origin in backend CORS
+      - name: Allow the frontend origins in backend CORS
         run: |
+          # Cloud Run serves a service on several URLs (e.g. SERVICE-HASH-el.a.run.app and
+          # SERVICE-PROJECTNUMBER.REGION.run.app). Browsers send whichever one the user opened,
+          # so every URL of the frontend must be an allowed origin.
+          ORIGINS="$(gcloud run services describe "$FRONTEND_SERVICE" --region "$REGION" \
+            --format=json | python3 -c '
+          import json, sys
+          svc = json.load(sys.stdin)
+          urls = set(json.loads(svc["metadata"]["annotations"].get("run.googleapis.com/urls", "[]")))
+          urls.add(svc["status"]["url"])
+          print(",".join(sorted(u.rstrip("/") for u in urls)))
+          ')"
+          if [ -z "$ORIGINS" ]; then echo "Could not resolve the frontend Cloud Run URLs" >&2; exit 1; fi
+          echo "Allowing origins: $ORIGINS"
           gcloud run services update "$BACKEND_SERVICE" --region "$REGION" \
-            --update-env-vars "FRONTEND_ORIGIN=${{ needs.frontend.outputs.url }}"
+            --update-env-vars "^@^FRONTEND_ORIGIN=$ORIGINS"
