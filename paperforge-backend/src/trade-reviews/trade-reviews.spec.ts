@@ -128,6 +128,22 @@ describe('Gemini provider',()=>{
     expect(body.generationConfig.responseMimeType).toBeUndefined();expect(body.generationConfig.responseSchema).toBeUndefined();
     expect(body.contents[0].parts[0].text).toContain('Respond with ONE JSON object');
   });
+  it('falls back to a flash model from the key\'s own model list after a 404',async()=>{
+    const ok=()=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(review)}]}}]});
+    const fetchMock=vi.spyOn(globalThis,'fetch').mockImplementation(async input=>{
+      const url=String(input);
+      if(url.includes('/models?'))return Response.json({models:[
+        {name:'models/gemini-3-flash',supportedGenerationMethods:['generateContent']},
+        {name:'models/gemini-3-pro',supportedGenerationMethods:['generateContent']},
+        {name:'models/embedding-001',supportedGenerationMethods:['embedContent']}]});
+      return url.includes('models/gemini-3-flash:')?ok():Response.json({error:{status:'NOT_FOUND'}},{status:404});
+    });
+    const gemma=new GeminiReviewProvider(new ConfigService({GEMINI_API_KEY:'test-key-not-real',GEMINI_MODEL:'gemma-3-27b-it'}));
+    await expect(gemma.generate(calculateTradeFacts(trade))).resolves.toEqual(review);
+    const calls=fetchMock.mock.calls.length;
+    await expect(gemma.generate(calculateTradeFacts(trade))).resolves.toEqual(review);
+    expect(fetchMock.mock.calls.length-calls).toBe(1);
+  });
   it.each([400,401,403,404,429,500])('redacts upstream failures (%s)',async status=>{
     vi.spyOn(globalThis,'fetch').mockResolvedValue(Response.json({secret:'test-key-not-real',error:'Private details'},{status}));
     try{await provider().generate(calculateTradeFacts(trade));throw new Error('Expected failure');}
