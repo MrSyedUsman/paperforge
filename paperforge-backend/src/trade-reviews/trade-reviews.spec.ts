@@ -118,6 +118,16 @@ describe('Gemini provider',()=>{
     const body=JSON.parse(init!.body as string);expect(body.generationConfig.responseMimeType).toBe('application/json');
     expect(body.generationConfig.maxOutputTokens).toBe(2048);expect(init!.signal).toBeInstanceOf(AbortSignal);
   });
+  it('uses prompt-based JSON for Gemma models and accepts fenced output',async()=>{
+    const gemma=new GeminiReviewProvider(new ConfigService({GEMINI_API_KEY:'test-key-not-real',GEMINI_MODEL:'gemma-3-27b-it'}));
+    const fetchMock=vi.spyOn(globalThis,'fetch').mockResolvedValue(Response.json({candidates:[{finishReason:'STOP',
+      content:{parts:[{text:'```json\n'+JSON.stringify(review)+'\n```'}]}}]}));
+    await expect(gemma.generate(calculateTradeFacts(trade))).resolves.toEqual(review);
+    const [url,init]=fetchMock.mock.calls[0];expect(String(url)).toContain('models/gemma-3-27b-it:');
+    const body=JSON.parse(init!.body as string);
+    expect(body.generationConfig.responseMimeType).toBeUndefined();expect(body.generationConfig.responseSchema).toBeUndefined();
+    expect(body.contents[0].parts[0].text).toContain('Respond with ONE JSON object');
+  });
   it.each([400,401,403,404,429,500])('redacts upstream failures (%s)',async status=>{
     vi.spyOn(globalThis,'fetch').mockResolvedValue(Response.json({secret:'test-key-not-real',error:'Private details'},{status}));
     try{await provider().generate(calculateTradeFacts(trade));throw new Error('Expected failure');}
