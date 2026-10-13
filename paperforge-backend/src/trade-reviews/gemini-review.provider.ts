@@ -6,7 +6,7 @@ export const REVIEW_TIMEOUT_MS=20_000;
 /** Gemma is much slower than Gemini Flash, so it gets longer before we switch to the fallback model. */
 export const GEMMA_TIMEOUT_MS=25_000;
 /** Default model when GEMINI_MODEL is unset (free tier on AI Studio, fast, supports structured JSON output). */
-const DEFAULT_MODEL='gemini-2.5-flash';
+const DEFAULT_MODEL='gemini-3.5-flash-lite';
 /** Default for the retry after a failure on the primary model: an alias that tracks Google's current Flash model. */
 const DEFAULT_FALLBACK_MODEL='gemini-flash-latest';
 const MODEL_PATTERN=/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/;
@@ -72,8 +72,8 @@ export class GeminiReviewProvider {
       method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(timeoutMs),
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],
         generationConfig:{temperature:0.2,
-          // Gemma may emit reasoning before the JSON, so give it more room than the schema-constrained Gemini models.
-          maxOutputTokens:structured?2048:4096,
+          // Gemma and Gemini 3 models may spend output tokens on reasoning before the JSON, so give them more room.
+          maxOutputTokens:structured&&!model.startsWith('gemini-3')?2048:4096,
           // Gemma models reject JSON mode and response schemas; they are asked for JSON in the prompt instead.
           ...(structured?{responseMimeType:'application/json',responseSchema:REVIEW_SCHEMA}:{}),
           // 2.5 Flash "thinks" by default; thinking tokens would eat the small output budget.

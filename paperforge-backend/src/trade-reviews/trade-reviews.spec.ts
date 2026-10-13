@@ -156,6 +156,14 @@ describe('Gemini provider',()=>{
     await gemma.generate(calculateTradeFacts(trade));
     expect(String(fetchMock.mock.calls[2][0])).toContain('gemma-4-31b-it:');
   });
+  it('defaults to gemini-3.5-flash-lite with structured output',async()=>{
+    const fetchMock=vi.spyOn(globalThis,'fetch').mockResolvedValue(goodResponse());
+    const lite=new GeminiReviewProvider(new ConfigService({GEMINI_API_KEY:'test-key-not-real'}));
+    await expect(lite.generate(calculateTradeFacts(trade))).resolves.toEqual(review);
+    const [url,init]=fetchMock.mock.calls[0];expect(String(url)).toContain('models/gemini-3.5-flash-lite:');
+    const body=JSON.parse(init!.body as string);
+    expect(body.generationConfig.responseMimeType).toBe('application/json');expect(body.generationConfig.maxOutputTokens).toBe(4096);
+  });
   it.each([400,401,403,404,429,500])('redacts upstream failures (%s)',async status=>{
     vi.spyOn(globalThis,'fetch').mockResolvedValue(Response.json({secret:'test-key-not-real',error:'Private details'},{status}));
     try{await provider().generate(calculateTradeFacts(trade));throw new Error('Expected failure');}
