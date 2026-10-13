@@ -18,7 +18,7 @@ initial account. Add the Gemini settings locally:
 
 ```env
 GEMINI_API_KEY=your_private_key
-GEMINI_MODEL=gemini-flash-latest
+GEMINI_MODEL=gemini-2.5-flash
 ```
 
 `.env` is ignored by Git. Never put this key in frontend variables. Restart the
