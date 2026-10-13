@@ -1,18 +1,28 @@
-import { BadGatewayException, GatewayTimeoutException, Inject, Injectable, ServiceUnavailableException, HttpException } from '@nestjs/common';
+import { BadGatewayException, GatewayTimeoutException, Inject, Injectable, Logger, ServiceUnavailableException, HttpException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { TradeFacts } from './trade-facts.js';
 import { REVIEW_SCHEMA, reviewPrompt, validateReview, type ReviewContent } from './review-output.js';
 export const REVIEW_TIMEOUT_MS=20_000;
 @Injectable()
 export class GeminiReviewProvider {
+  private readonly logger=new Logger(GeminiReviewProvider.name);
   constructor(@Inject(ConfigService) private readonly config: ConfigService) {}
   get model(): string {
     const model=this.config.get<string>('GEMINI_MODEL')?.trim()||'gemini-2.5-flash';
     if(!/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/.test(model))throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'AI reviews are not configured correctly.'});
     return model;
   }
+  /** Google's machine-readable error code (e.g. API_KEY_INVALID); never the raw body, which may echo request data. */
+  private async providerReason(response:Response):Promise<string|undefined> {
+    try {
+      const body=await response.json() as {error?:{status?:unknown;details?:{reason?:unknown}[]}};
+      const pick=[body.error?.details?.find(d=>typeof d?.reason==='string')?.reason,body.error?.status]
+        .find((v):v is string=>typeof v==='string'&&/^[A-Z][A-Z0-9_]{1,60}$/.test(v));
+      return pick;
+    } catch { return undefined; }
+  }
   async generate(facts:TradeFacts): Promise<ReviewContent> {
-    const key=this.config.get<string>('GEMINI_API_KEY')?.trim();
+    const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim();
     if(!key)throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'AI reviews are not configured on the server yet.'});
     try {
       const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(this.model)}:generateContent`,{
@@ -23,9 +33,11 @@ export class GeminiReviewProvider {
             ...(this.model.startsWith('gemini-2.5-flash')?{thinkingConfig:{thinkingBudget:0}}:{})}}),
       });
       if(!response.ok) {
+        const reason=await this.providerReason(response);
+        this.logger.warn(`Gemini request failed: HTTP ${response.status}${reason?` (${reason})`:''}, model ${this.model}`);
         if(response.status===429)throw new ServiceUnavailableException({code:'AI_RATE_LIMIT',message:'The AI service is busy or its quota is exhausted. Please try again later.'});
         if(response.status===402)throw new ServiceUnavailableException({code:'AI_BILLING',providerStatus:402,message:'The AI provider requires billing or credits for this key. Please contact the app administrator.'});
-        if([400,401,403,404].includes(response.status))throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'The AI service could not accept the configured key or model. Please contact the app administrator.'});
+        if([400,401,403,404].includes(response.status))throw new ServiceUnavailableException({code:'AI_CONFIGURATION',providerStatus:response.status,...(reason?{providerReason:reason}:{}),message:'The AI service could not accept the configured key or model. Please contact the app administrator.'});
         throw new ServiceUnavailableException({code:'AI_UNAVAILABLE',providerStatus:response.status,message:'The AI service is temporarily unavailable. Please try again.'});
       }
       const data=await response.json() as {candidates?:{finishReason?:string;content?:{parts?:{text?:string;thought?:boolean}[]}}[]};
