@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import type { TradeFacts } from './trade-facts.js';
 import { REVIEW_SCHEMA, reviewPrompt, validateReview, type ReviewContent } from './review-output.js';
 export const REVIEW_TIMEOUT_MS=20_000;
-/** Default model when GEMINI_MODEL is unset. Known to work on the AI Studio free tier. */
-const DEFAULT_MODEL='gemini-2.5-flash';
+/** Default model when GEMINI_MODEL is unset (free on AI Studio; confirmed available to the production key). */
+const DEFAULT_MODEL='gemma-4-31b-it';
+/** Default for the one-time retry after a 404 on the primary model. */
+const DEFAULT_FALLBACK_MODEL='gemini-2.5-flash';
 const MODEL_PATTERN=/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,100}$/;
 const JSON_ONLY_SUFFIX=`
 
@@ -32,7 +34,7 @@ export class GeminiReviewProvider {
   }
   get model(): string { return this.normalizeModel(this.config.get<string>('GEMINI_MODEL'),DEFAULT_MODEL); }
   /** Used once if the primary model returns 404. Set GEMINI_FALLBACK_MODEL to override. */
-  get fallbackModel(): string { return this.normalizeModel(this.config.get<string>('GEMINI_FALLBACK_MODEL'),DEFAULT_MODEL); }
+  get fallbackModel(): string { return this.normalizeModel(this.config.get<string>('GEMINI_FALLBACK_MODEL'),DEFAULT_FALLBACK_MODEL); }
   /** Google's machine-readable error code (e.g. API_KEY_INVALID); never the raw body, which may echo request data. */
   private async providerReason(response:Response):Promise<string|undefined> {
     try {
