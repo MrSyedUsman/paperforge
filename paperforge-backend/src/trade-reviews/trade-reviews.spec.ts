@@ -127,6 +127,7 @@ describe('Gemini provider',()=>{
     const body=JSON.parse(init!.body as string);
     expect(body.generationConfig.responseMimeType).toBeUndefined();expect(body.generationConfig.responseSchema).toBeUndefined();
     expect(body.contents[0].parts[0].text).toContain('Respond with ONE JSON object');
+    expect(body.generationConfig.maxOutputTokens).toBe(4096);expect(body.systemInstruction).toBeUndefined();
   });
   it('falls back to a flash model from the key\'s own model list after a 404',async()=>{
     const ok=()=>Response.json({candidates:[{finishReason:'STOP',content:{parts:[{text:JSON.stringify(review)}]}}]});
