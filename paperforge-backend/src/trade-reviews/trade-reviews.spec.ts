@@ -151,7 +151,7 @@ describe('Gemini provider',()=>{
     const fetchMock=vi.spyOn(globalThis,'fetch').mockImplementation(async input=>String(input).includes('gemma-4-31b-it:')?failure():ok());
     const gemma=new GeminiReviewProvider(new ConfigService({GEMINI_API_KEY:'test-key-not-real',GEMINI_MODEL:'gemma-4-31b-it'}));
     await expect(gemma.generate(calculateTradeFacts(trade))).resolves.toEqual(review);
-    expect(fetchMock.mock.calls.map(([url])=>String(url).match(/models\/([^:]+):/)?.[1])).toEqual(['gemma-4-31b-it','gemini-2.5-flash']);
+    expect(fetchMock.mock.calls.map(([url])=>String(url).match(/models\/([^:]+):/)?.[1])).toEqual(['gemma-4-31b-it','gemini-flash-latest']);
     // A transient failure must not pin the fallback: the next request tries Gemma first again.
     await gemma.generate(calculateTradeFacts(trade));
     expect(String(fetchMock.mock.calls[2][0])).toContain('gemma-4-31b-it:');
