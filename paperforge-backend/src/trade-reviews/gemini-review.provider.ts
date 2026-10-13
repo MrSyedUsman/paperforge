@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import type { TradeFacts } from './trade-facts.js';
 import { REVIEW_SCHEMA, reviewPrompt, validateReview, type ReviewContent } from './review-output.js';
 export const REVIEW_TIMEOUT_MS=20_000;
+/** Gemma is much slower than Gemini Flash, so it gets longer before we switch to the fallback model. */
+export const GEMMA_TIMEOUT_MS=25_000;
 /** Default model when GEMINI_MODEL is unset (free on AI Studio; confirmed available to the production key). */
 const DEFAULT_MODEL='gemma-4-31b-it';
 /** Default for the one-time retry after a 404 on the primary model. */
@@ -63,10 +65,11 @@ export class GeminiReviewProvider {
     return names.filter(n=>Number.isFinite(version(n))).sort((x,y)=>version(y)-version(x)||(x.includes('lite')?1:0)-(y.includes('lite')?1:0)).slice(0,2);
   }
   private request(model:string,key:string,facts:TradeFacts): Promise<Response> {
+    const timeoutMs=model.startsWith('gemma')?GEMMA_TIMEOUT_MS:REVIEW_TIMEOUT_MS;
     const structured=this.supportsStructuredOutput(model);
     const prompt=structured?reviewPrompt(facts):reviewPrompt(facts)+JSON_ONLY_SUFFIX;
     return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{
-      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(REVIEW_TIMEOUT_MS),
+      method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(timeoutMs),
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],
         generationConfig:{temperature:0.2,
           // Gemma may emit reasoning before the JSON, so give it more room than the schema-constrained Gemini models.
@@ -77,24 +80,41 @@ export class GeminiReviewProvider {
           ...(model.startsWith('gemini-2.5-flash')?{thinkingConfig:{thinkingBudget:0}}:{})}}),
     });
   }
+  /** Never throws: a timeout or network error is returned so the caller can try another model. */
+  private async attempt(model:string,key:string,facts:TradeFacts): Promise<Response|Error> {
+    try { return await this.request(model,key,facts); }
+    catch(cause) { return cause instanceof Error?cause:new Error('request failed'); }
+  }
+  /** Worth trying another model: not found, a server error from Google, a timeout or a network failure. */
+  private shouldTryAnotherModel(outcome:Response|Error): boolean {
+    return outcome instanceof Error||outcome.status===404||outcome.status>=500;
+  }
   async generate(facts:TradeFacts): Promise<ReviewContent> {
     const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim();
     if(!key)throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'AI reviews are not configured on the server yet.'});
     try {
       let model=this.resolvedModel??this.model;
-      let response=await this.request(model,key,facts);
-      if(response.status===404) {
-        this.logger.warn(`Model "${model}" returned 404 (not found, or not supported for generateContent on this key)`);
-        const available=await this.listModels(key);
+      let outcome=await this.attempt(model,key,facts);
+      let notFoundResolved=false;
+      if(this.shouldTryAnotherModel(outcome)) {
+        const notFound=!(outcome instanceof Error)&&outcome.status===404;
+        this.logger.warn(outcome instanceof Error
+          ?`Model "${model}" failed (${outcome.name}); trying a fallback model`
+          :`Model "${model}" returned HTTP ${outcome.status}${notFound?' (not found, or not supported for generateContent on this key)':''}; trying a fallback model`);
+        // Only a 404 means the model name itself is wrong, so only then look up what the key can use.
+        notFoundResolved=notFound;
+        const available=notFound?await this.listModels(key):[];
         const candidates=[...new Set([this.fallbackModel,...this.pickFlashModel(available)])].filter(m=>m!==model&&(!available.length||available.includes(m)));
         for(const candidate of candidates) {
           this.logger.warn(`Retrying with model "${candidate}"`);
           model=candidate;
-          response=await this.request(model,key,facts);
-          if(response.status!==404)break;
+          outcome=await this.attempt(model,key,facts);
+          if(!this.shouldTryAnotherModel(outcome))break;
         }
       }
-      if(response.ok&&model!==this.resolvedModel&&model!==this.model) {
+      if(outcome instanceof Error)throw outcome;
+      const response=outcome;
+      if(response.ok&&notFoundResolved&&model!==this.resolvedModel&&model!==this.model) {
         this.resolvedModel=model;
         this.logger.warn(`Using model "${model}" instead of the configured "${this.model}". Set GEMINI_MODEL=${model} to make this permanent.`);
       }

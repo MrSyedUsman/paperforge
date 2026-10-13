@@ -21,7 +21,7 @@ export function TradeReviewPanel({trade,history,onSelect,close}:Props) {
   useEffect(()=>{
     let active=true;
     const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort('timeout'),30_000);
+    const timer=setTimeout(()=>controller.abort('timeout'),60_000);
     const load=async()=>{
       try {
         if(!accessToken)throw new Error('Sign in to request an AI review.');
