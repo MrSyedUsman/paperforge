@@ -68,7 +68,9 @@ export class GeminiReviewProvider {
     return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{
       method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(REVIEW_TIMEOUT_MS),
       body:JSON.stringify({contents:[{role:'user',parts:[{text:prompt}]}],
-        generationConfig:{temperature:0.2,maxOutputTokens:2048,
+        generationConfig:{temperature:0.2,
+          // Gemma may emit reasoning before the JSON, so give it more room than the schema-constrained Gemini models.
+          maxOutputTokens:structured?2048:4096,
           // Gemma models reject JSON mode and response schemas; they are asked for JSON in the prompt instead.
           ...(structured?{responseMimeType:'application/json',responseSchema:REVIEW_SCHEMA}:{}),
           // 2.5 Flash "thinks" by default; thinking tokens would eat the small output budget.
