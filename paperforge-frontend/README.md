@@ -12,7 +12,7 @@ and compete against simulated opponents. No real-money orders are placed.
 - Portfolio, trade history, activity, and downloadable trade cards.
 - Optional pre-trade risk checks with calculated scenarios and concise Gemini explanations.
 - On-demand Gemini reviews of completed normal trades, with evidence, a lesson, and a practice exercise.
-- Timed bot competitions with separate wallets, standings, and result cards.
+- Timed competitions against seven distinct rule-based bot strategies, with eligibility-aware pacing, decision explanations, separate wallets, standings, and result cards.
 - Browser-local profiles and leaderboards with sample benchmark participants.
 - Virtual starting balance of $1,000 and a $50 faucet every six hours.
 
@@ -107,3 +107,5 @@ acknowledged. Competition AI, pre-trade coaching, and automatic trading are not
 included. See [AI review architecture](docs/ai-trade-review.md).
 
 See [Pre-trade risk checks](docs/ai-trade-risk.md) for behaviour, limits and verification.
+
+See [Competition bot strategies](docs/bot-strategies.md) for rules, participation planning and reproducible evaluation.

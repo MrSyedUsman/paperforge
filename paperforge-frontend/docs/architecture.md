@@ -114,3 +114,5 @@ server. The automated test suite does not depend on Binance availability.
 - Live data depends on Binance connectivity; local results are unverified.
 
 Optional pre-trade checks share the backend AI allowance and simulator formulas; see [Pre-trade risk checks](ai-trade-risk.md).
+
+Competition opponents now use sampled-price histories and distinct rule-based strategy modules; see [Competition bot strategies](bot-strategies.md).

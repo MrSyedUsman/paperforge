@@ -2,7 +2,7 @@
 "use client";
 import { CoinIcon } from "@/components/coin-icon";
 import { ThemeSlider } from "@/components/theme-slider";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { formatMarketPrice, type Market, type Quote } from "@/lib/market-data/markets";
 import {
   calculateLiquidationPrice,
@@ -23,6 +23,8 @@ import { pricesFor, finite, validPosition, pnlFor, equityFor, rankPlayers, close
 import { competitionRepository } from "./competition-repository";
 
 import { settleLobby, recordSettlement, event } from "./settlement";
+import { useCompetitionBots } from "./use-competition-bots";
+import { BotGuide } from "./bot-guide";
 import { CompetitionHub } from "./competition-hub";
 import { Create } from "./create-lobby";
 import { Confirm } from "./confirm-lobby";
@@ -41,6 +43,9 @@ export function BotCompetition({
   profileName,
   onPortfolio,
 }: any) {
+  const [guideOpen, setGuideOpen] = useState(false), [guideArena, setGuideArena] = useState(false);
+  const guideTrigger = useRef<HTMLButtonElement | null>(null);
+  function openGuide(event: MouseEvent<HTMLButtonElement>) { guideTrigger.current = event.currentTarget; setGuideArena(screen === "arena" && lobby?.status === "active"); setGuideOpen(true); }
   const [hydrated, setHydrated] = useState(false);
   const [lobby, setLobby] = useState<Lobby | null>(null),
     [screen, setScreen] = useState<
@@ -63,7 +68,6 @@ export function BotCompetition({
     [quitOpen, setQuitOpen] = useState(false),
     [finalMinuteOpen, setFinalMinuteOpen] = useState(false);
   const quotesRef = useRef(quotes),
-    lastBotRun = useRef(0),
     busy = useRef(false),
     finalMinuteSeen = useRef<number | null>(null);
   quotesRef.current = quotes;
@@ -266,7 +270,7 @@ export function BotCompetition({
       let changed = false,
         events = current.events;
       const players = current.players.map((player) => {
-        if (player.status !== "active") return player;
+        if (player.status !== "active" || !player.isUser) return player;
         let next = player,
           playerLiquidated = false;
         player.positions.forEach((pos) => {
@@ -320,7 +324,7 @@ export function BotCompetition({
     setLobby(next);
     setStats(previous => recordSettlement(previous, next));
     setScreen("results");
-  }, []);
+  }, [setLobby, setStats, setScreen]);
   function abandon() {
     if (!lobby || lobby.status !== "active") return;
     let players = lobby.players.map((p) =>
@@ -504,168 +508,8 @@ export function BotCompetition({
       ].slice(0, 80),
     });
   }
-  useEffect(() => {
-    if (
-      !lobby ||
-      lobby.status !== "active" ||
-      feed !== "live" ||
-      !allowed.length
-    )
-      return;
-    const freq = { Easy: 12000, Medium: 8500, Hard: 6000, Expert: 4500 }[
-      lobby.settings.difficulty
-    ];
-    if (now - lastBotRun.current < freq) return;
-    lastBotRun.current = now;
-    setLobby((current) => {
-      if (!current || current.status !== "active") return current;
-      let events = current.events,
-        players = current.players.map((player) => {
-          if (player.isUser || player.status !== "active") return player;
-          let p = player;
-          const profile = {
-              Easy: {
-                max: 5,
-                risk: 0.035,
-                randomClose: 0.28,
-                noise: 4,
-                minMomentum: 0,
-                stop: 0.12,
-              },
-              Medium: {
-                max: 8,
-                risk: 0.05,
-                randomClose: 0.14,
-                noise: 2.2,
-                minMomentum: 0.1,
-                stop: 0.16,
-              },
-              Hard: {
-                max: Math.min(current.settings.maxLeverage, 30),
-                risk: 0.055,
-                randomClose: 0.04,
-                noise: 1.1,
-                minMomentum: 0.2,
-                stop: 0.2,
-              },
-              Expert: {
-                max: current.settings.maxLeverage,
-                risk: 0.05,
-                randomClose: 0.015,
-                noise: 0.5,
-                minMomentum: 0.12,
-                stop: 0.24,
-              },
-            }[current.settings.difficulty],
-            evaluated = p.positions
-              .map((pos) => {
-                const mark =
-                    pricesFor(quotesRef.current, pos.pair) || pos.entry,
-                  gross = finite(grossPnl(pos.size, pos.entry, mark, pos.side)),
-                  roundTrip =
-                    finite(pos.openFee) + finite(tradingFee(pos.size));
-                return { pos, outcome: gross - roundTrip };
-              })
-              .sort((a, b) => b.outcome - a.outcome),
-            winner = evaluated[0],
-            loser = evaluated[evaluated.length - 1],
-            profitable =
-              winner &&
-              winner.outcome > Math.max(0.1, winner.pos.size * 0.00015),
-            stopped = loser && loser.outcome < -loser.pos.margin * profile.stop,
-            randomExit =
-              p.positions.length && Math.random() < profile.randomClose;
-          if (p.positions.length && (profitable || stopped || randomExit)) {
-            const pick = profitable
-                ? winner
-                : stopped
-                  ? loser
-                  : evaluated[Math.floor(Math.random() * evaluated.length)],
-              pos = pick.pos,
-              before = p.realized;
-            p = closePosition(
-              p,
-              pos,
-              profitable
-                ? "Bot take-profit"
-                : stopped
-                  ? "Bot risk stop"
-                  : "Bot strategy exit",
-              pricesFor(quotesRef.current, pos.pair) || pos.entry,
-            );
-            events = [
-              event(
-                `${p.name} closed ${pos.pair} · ${money(p.realized - before)}`,
-                p.realized >= before ? "up" : "down",
-              ),
-              ...events,
-            ];
-          } else if (
-            p.positions.length < current.settings.maxPositions &&
-            Math.random() < 0.72
-          ) {
-            const candidates = allowed.filter(
-                (m: Market) =>
-                  Math.abs(quotesRef.current[m.pair]?.change || 0) >=
-                  profile.minMomentum,
-              ),
-              market = (candidates.length ? candidates : allowed)[
-                Math.floor(
-                  Math.random() * (candidates.length || allowed.length),
-                )
-              ],
-              q = quotesRef.current[market.pair];
-            if (q && pricesFor(quotesRef.current, market.pair)) {
-              const momentum = q.change || 0,
-                edge =
-                  current.settings.difficulty === "Easy"
-                    ? (Math.random() - 0.5) * profile.noise
-                    : momentum + (Math.random() - 0.5) * profile.noise,
-                direction = edge >= 0 ? "Long" : "Short",
-                lev = Math.max(
-                  1,
-                  Math.min(
-                    current.settings.maxLeverage,
-                    profile.max,
-                    Math.ceil(1 + Math.random() * profile.max),
-                  ),
-                ),
-                risk = roundMoney(
-                  Math.min(
-                    p.balance * 0.18,
-                    p.balance * (profile.risk + Math.random() * profile.risk),
-                  ),
-                );
-              const next = openFor(p, market.pair, direction, risk, lev, current.settings, quotesRef.current);
-              if (next !== p) {
-                p = next;
-                events = [
-                  event(
-                    `${p.name} opened ${direction} ${market.pair} at ${lev}×`,
-                  ),
-                  ...events,
-                ];
-              }
-            }
-          }
-          return p;
-        });
-      players = players.map((p) => {
-        if (p.status !== "active") return p;
-        const eq = equityFor(p, quotesRef.current);
-        if (current.settings.elimination && eq <= 1) {
-          events = [event(`${p.name} was eliminated`, "down"), ...events];
-          return { ...p, status: "eliminated" as Status };
-        }
-        return p;
-      });
-      return {
-        ...current,
-        players: rankPlayers(players, quotesRef.current),
-        events: events.slice(0, 80),
-      };
-    });
-  }, [now, lobby, feed, allowed]);
+  useCompetitionBots(lobby, setLobby, markets, quotes, feed, now);
+  function renderScreen() {
   if (
     screen === "hub" ||
     (!lobby && screen !== "create" && screen !== "confirm")
@@ -673,6 +517,7 @@ export function BotCompetition({
     return (
       <CompetitionHub
         stats={stats}
+        meetBots={openGuide}
         create={() => setScreen("create")}
         resume={
           lobby
@@ -745,6 +590,7 @@ export function BotCompetition({
           </p>
         </div>
         <div className="bc-arena-actions">
+          <button type="button" className="bot-guide-button" aria-haspopup="dialog" aria-expanded={guideOpen} onClick={openGuide}>Meet the bots</button>
           <div className={remaining <= 60000 ? "bc-timer warning" : "bc-timer"}>
             <small>TIME REMAINING</small>
             <b aria-label={`${Math.ceil(remaining / 1000)} seconds remaining`}>
@@ -829,7 +675,7 @@ export function BotCompetition({
           <div className="bc-rulebox">
             <b>Fair-play engine</b>
             <p>
-              Bots use only current ticker data, the same fees, margin, leverage
+              Bots follow distinct rules using observed ticker history and the same fees, margin, leverage
               and PnL formulas as you. No future candles or hidden balance
               bonuses.
             </p>
@@ -864,6 +710,8 @@ export function BotCompetition({
       </div>
     </div>
   );
+  }
+  return <>{renderScreen()}<BotGuide open={guideOpen} dismiss={() => setGuideOpen(false)} trigger={guideTrigger} participants={guideArena ? lobby?.players.filter(p => !p.isUser).map(p => p.name) : undefined} finished={Boolean(guideArena && lobby?.status === "finished")}/></>;
 }
 
 function formatTime(ms: number) {
