@@ -19,6 +19,10 @@ export type ArenaTrade = {
   maintenanceMarginRate: number;
   liquidationFeeRate: number;
 };
+export type ArenaPosition = Omit<
+  ArenaTrade,
+  'exit' | 'fee' | 'pnl' | 'closed' | 'reason'
+>;
 export type ArenaDecision = {
   tradeId: number;
   version: number;
@@ -38,14 +42,14 @@ export type ArenaPlayer = {
   fees: number | null;
   achieved: number | null;
   rank: number | null;
-  status: 'finished' | 'eliminated';
-  positions: never[];
+  status: 'active' | 'finished' | 'eliminated';
+  positions: ArenaPosition[];
   trades: ArenaTrade[];
   decision: ArenaDecision | null;
 };
 export type ArenaSnapshot = {
   version: 1;
-  status: 'finished';
+  status: 'active' | 'finished';
   completionReason: 'time' | 'elimination' | 'abandonment' | 'unknown';
   start: number;
   end: number;
@@ -113,6 +117,7 @@ function bool(value: unknown, label: string): boolean {
 export function validateArenaSnapshot(
   body: unknown,
   now = Date.now(),
+  activeAt?: number,
 ): ArenaSnapshot {
   if (Buffer.byteLength(JSON.stringify(body) ?? '') > ARENA_MAX_BYTES)
     return invalid(
@@ -132,8 +137,15 @@ export function validateArenaSnapshot(
     ],
     'arena',
   );
-  if (d.version !== 1 || d.status !== 'finished')
-    return invalid('Only completed competitions can be debriefed.');
+  if (
+    d.version !== 1 ||
+    d.status !== (activeAt === undefined ? 'finished' : 'active')
+  )
+    return invalid(
+      activeAt === undefined
+        ? 'Only completed competitions can be debriefed.'
+        : 'Radar requires an active competition.',
+    );
   const start = num(d.start, 'start', 1, now + 5000),
     end = num(d.end, 'end', start + 1, now + 3_600_000),
     finalized = nullable(
@@ -238,110 +250,178 @@ export function validateArenaSnapshot(
     const bot = isUser ? null : BOT_CATALOG[Number(p.id.slice(4))];
     if (isUser ? p.botName != null : p.botName !== bot?.name)
       return invalid('Bot identity does not match the known roster.');
-    if (!Array.isArray(p.positions) || p.positions.length)
+    if (
+      !Array.isArray(p.positions) ||
+      (activeAt === undefined && p.positions.length) ||
+      p.positions.length > maxPositions
+    )
       return invalid('Completed arenas must have no unsettled positions.');
     if (!Array.isArray(p.trades) || p.trades.length > 500)
       return invalid('Too many trades for one participant.');
     totalTrades += p.trades.length;
     if (totalTrades > 2500)
       return invalid('Too many arena trades for a debrief.');
-    const trades = p.trades
-      .map((value) => {
-        const t = object(
-          value,
-          [
-            'id',
-            'pair',
-            'side',
-            'lev',
-            'margin',
-            'size',
-            'entry',
-            'exit',
-            'openFee',
-            'fee',
-            'pnl',
-            'opened',
-            'closed',
-            'reason',
-            'maintenanceMarginRate',
-            'liquidationFeeRate',
-          ],
-          'trade',
-        );
-        if (typeof t.pair !== 'string' || !/^[A-Z0-9]{1,24}USDT$/.test(t.pair))
-          return invalid('Invalid trade market.');
-        if (
-          (marketMode === 'custom' && !settings.custom.includes(t.pair)) ||
-          (marketMode !== 'custom' &&
-            ![
-              'BTCUSDT',
-              'ETHUSDT',
-              'SOLUSDT',
-              'BNBUSDT',
-              'XRPUSDT',
-              'DOGEUSDT',
-              'ADAUSDT',
-              'AVAXUSDT',
-            ].includes(t.pair))
-        )
-          return invalid('Trade market is outside the arena settings.');
-        const lev = num(t.lev, 'trade leverage', 1, maxLeverage),
-          opened = num(
-            t.opened,
-            'trade opening time',
-            start,
-            end - Number.EPSILON,
-          ),
-          closed = num(
-            t.closed,
-            'trade closing time',
-            opened,
-            (finalized ?? now) + 2000,
-          );
-        if (!Number.isInteger(lev) || opened >= end)
-          return invalid('Trade opened outside the competition deadline.');
-        const trade: ArenaTrade = {
-          id: num(t.id, 'trade identity', 0, 1e16),
-          pair: t.pair,
-          side: enumeration(t.side, ['Long', 'Short'] as const, 'trade side'),
-          lev,
-          margin: num(t.margin, 'margin', 0.01, 1e8),
-          size: num(t.size, 'notional', 0.01, 5e9),
-          entry: num(t.entry, 'entry', 1e-12, 1e9),
-          exit: num(t.exit, 'exit', 1e-12, 1e9),
-          openFee: nullable(t.openFee, 'opening fee', 0, 1e9),
-          fee: nullable(t.fee, 'closing fee', 0, 1e9),
-          pnl: nullable(t.pnl, 'recorded net PnL'),
+    const normalizeTrade = (value: unknown): ArenaTrade => {
+      const t = object(
+        value,
+        [
+          'id',
+          'pair',
+          'side',
+          'lev',
+          'margin',
+          'size',
+          'entry',
+          'exit',
+          'openFee',
+          'fee',
+          'pnl',
+          'opened',
+          'closed',
+          'reason',
+          'maintenanceMarginRate',
+          'liquidationFeeRate',
+        ],
+        'trade',
+      );
+      if (typeof t.pair !== 'string' || !/^[A-Z0-9]{1,24}USDT$/.test(t.pair))
+        return invalid('Invalid trade market.');
+      if (
+        (marketMode === 'custom' && !settings.custom.includes(t.pair)) ||
+        (marketMode !== 'custom' &&
+          ![
+            'BTCUSDT',
+            'ETHUSDT',
+            'SOLUSDT',
+            'BNBUSDT',
+            'XRPUSDT',
+            'DOGEUSDT',
+            'ADAUSDT',
+            'AVAXUSDT',
+          ].includes(t.pair))
+      )
+        return invalid('Trade market is outside the arena settings.');
+      const lev = num(t.lev, 'trade leverage', 1, maxLeverage),
+        opened = num(
+          t.opened,
+          'trade opening time',
+          start,
+          end - Number.EPSILON,
+        ),
+        closed = num(
+          t.closed,
+          'trade closing time',
           opened,
-          closed,
-          reason: enumeration(
-            t.reason,
-            ['normal', 'liquidation', 'time', 'quit', 'opponent'] as const,
-            'trade close type',
-          ),
-          maintenanceMarginRate:
-            t.maintenanceMarginRate == null
-              ? 0.005
-              : num(t.maintenanceMarginRate, 'maintenance rate', 0, 0.05),
-          liquidationFeeRate:
-            t.liquidationFeeRate == null
-              ? 0.001
-              : num(t.liquidationFeeRate, 'liquidation rate', 0, 0.05),
-        };
-        if (Math.abs(trade.size - trade.margin * lev) > 0.005 * lev + 0.011)
-          return invalid('Trade exposure contradicts margin and leverage.');
-        return trade;
-      })
+          activeAt ?? (finalized ?? now) + 2000,
+        );
+      if (!Number.isInteger(lev) || opened >= end)
+        return invalid('Trade opened outside the competition deadline.');
+      const trade: ArenaTrade = {
+        id: num(t.id, 'trade identity', 0, 1e16),
+        pair: t.pair,
+        side: enumeration(t.side, ['Long', 'Short'] as const, 'trade side'),
+        lev,
+        margin: num(t.margin, 'margin', 0.01, 1e8),
+        size: num(t.size, 'notional', 0.01, 5e9),
+        entry: num(t.entry, 'entry', 1e-12, 1e9),
+        exit: num(t.exit, 'exit', 1e-12, 1e9),
+        openFee: nullable(t.openFee, 'opening fee', 0, 1e9),
+        fee: nullable(t.fee, 'closing fee', 0, 1e9),
+        pnl: nullable(t.pnl, 'recorded net PnL'),
+        opened,
+        closed,
+        reason: enumeration(
+          t.reason,
+          ['normal', 'liquidation', 'time', 'quit', 'opponent'] as const,
+          'trade close type',
+        ),
+        maintenanceMarginRate:
+          t.maintenanceMarginRate == null
+            ? 0.005
+            : num(t.maintenanceMarginRate, 'maintenance rate', 0, 0.05),
+        liquidationFeeRate:
+          t.liquidationFeeRate == null
+            ? 0.001
+            : num(t.liquidationFeeRate, 'liquidation rate', 0, 0.05),
+      };
+      if (Math.abs(trade.size - trade.margin * lev) > 0.005 * lev + 0.011)
+        return invalid('Trade exposure contradicts margin and leverage.');
+      return trade;
+    };
+    const trades = p.trades
+      .map(normalizeTrade)
       .sort(
         (a, b) => a.opened - b.opened || a.closed - b.closed || a.id - b.id,
       );
+    const positions: ArenaPosition[] =
+      activeAt === undefined
+        ? []
+        : (p.positions as unknown[]).map((value) => {
+            const pos = object(
+              value,
+              [
+                'id',
+                'pair',
+                'side',
+                'lev',
+                'margin',
+                'size',
+                'entry',
+                'openFee',
+                'opened',
+                'maintenanceMarginRate',
+                'liquidationFeeRate',
+              ],
+              'position',
+            );
+            const t = normalizeTrade({
+              ...pos,
+              exit: pos.entry,
+              fee: null,
+              pnl: null,
+              closed: activeAt,
+              reason: 'normal',
+            });
+            if (t.opened > activeAt)
+              return invalid('Position opened after the snapshot.');
+            const {
+              exit: ignoredExit,
+              fee: ignoredFee,
+              pnl: ignoredPnl,
+              closed: ignoredClosed,
+              reason: ignoredReason,
+              ...result
+            } = t;
+            void ignoredExit;
+            void ignoredFee;
+            void ignoredPnl;
+            void ignoredClosed;
+            void ignoredReason;
+            return result;
+          });
+    if (
+      new Set([...trades, ...positions].map((t) => t.id)).size !==
+      trades.length + positions.length
+    )
+      return invalid('Duplicate position or trade identities.');
+    if (
+      !settings.repeats &&
+      new Set(positions.map((p) => p.pair)).size !== positions.length
+    )
+      return invalid('Repeated open markets are disabled.');
     if (new Set(trades.map((t) => t.id)).size !== trades.length)
       return invalid('Duplicate trade identities.');
     // Equal close/open timestamps can represent sequential actions in the same millisecond.
     // Only reject overlaps that the recorded timestamps establish unambiguously.
-    for (const t of trades) {
-      const concurrent = trades.filter(
+    const intervals =
+      activeAt === undefined
+        ? trades
+        : [
+            ...trades,
+            ...positions.map((pos) => ({ ...pos, closed: activeAt + 1 })),
+          ];
+    for (const t of intervals) {
+      const concurrent = intervals.filter(
         (other) => other.opened <= t.opened && other.closed > t.opened,
       );
       if (concurrent.length > maxPositions)
@@ -446,10 +526,12 @@ export function validateArenaSnapshot(
       rank,
       status: enumeration(
         p.status,
-        ['finished', 'eliminated'] as const,
+        activeAt === undefined
+          ? (['finished', 'eliminated'] as const)
+          : (['active', 'eliminated'] as const),
         'participant status',
       ),
-      positions: [] as never[],
+      positions,
       trades,
       decision,
     };
@@ -474,7 +556,7 @@ export function validateArenaSnapshot(
     return invalid('Elimination outcome contradicts the arena state.');
   return {
     version: 1,
-    status: 'finished',
+    status: activeAt === undefined ? 'finished' : 'active',
     completionReason,
     start,
     end,

@@ -85,7 +85,7 @@ export type ArenaFacts = {
 const money = (n: number) => `${n < 0 ? '-' : ''}$${Math.abs(n).toFixed(2)}`;
 const closeEnough = (a: number, b: number) => Math.abs(a - b) <= 0.011;
 const prefix = (id: string) => id.replaceAll('-', '_');
-function tradeMetric(
+export function tradeMetric(
   t: ArenaTrade,
 ): TradeMetric & { walletDelta: number | null } {
   const liquidated = t.reason === 'liquidation';

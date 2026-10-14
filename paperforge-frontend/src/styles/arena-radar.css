@@ -1,0 +1,206 @@
+.arena-radar-trigger {
+  margin: 0 0 12px auto;
+  display: flex;
+  gap: 10px;
+  color: #82e8ba;
+}
+.arena-radar-panel {
+  position: fixed;
+  z-index: 111;
+  right: 16px;
+  top: 100px;
+  bottom: 16px;
+  width: min(560px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #365c4b;
+  border-radius: 16px;
+  background: #0b151c;
+  color: #dcece4;
+  box-shadow: 0 24px 80px #0009;
+  text-align: left;
+}
+.arena-radar-panel > header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 22px;
+  background: linear-gradient(125deg, #153b28, #0d1d24);
+  border-bottom: 1px solid #294337;
+}
+.arena-radar-panel h2 {
+  font-size: 26px;
+  margin: 8px 0;
+}
+.arena-radar-panel h2:focus {
+  outline: none !important;
+}
+.arena-radar-panel header p {
+  font-size: 11px;
+  margin: 0;
+  color: #a2bdb0;
+}
+.arena-radar-body {
+  padding: 20px 22px;
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.arena-radar-panel p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #b5cbbf;
+  overflow-wrap: anywhere;
+}
+.arena-radar-panel small {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #97b6a6;
+}
+.radar-controls {
+  display: grid;
+  gap: 8px;
+}
+.radar-availability {
+  font-size: 10px !important;
+}
+.radar-snapshot {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-left: 2px solid #64d4a7;
+  background: #13281f;
+  font-size: 11px;
+}
+.radar-snapshot span {
+  color: #a3bdaf;
+}
+.radar-snapshot p {
+  font-size: 10px;
+  margin: 0;
+}
+.radar-snapshot strong {
+  color: #a2edca;
+}
+.arena-radar-body > section {
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid #2b4337;
+  border-radius: 12px;
+  background: #0e1c22;
+}
+.arena-radar-body h3 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #e2f0e8;
+}
+.radar-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+.radar-metrics b {
+  display: block;
+  font: 600 14px var(--mono);
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+.radar-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 10px 0;
+}
+.radar-evidence > span {
+  max-width: 100%;
+  padding: 7px 9px;
+  border: 1px solid #2b4238;
+  border-radius: 7px;
+  background: #17312544;
+  color: #a1c4b0;
+  font-size: 10px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.radar-evidence small {
+  display: block;
+  font-size: 9px;
+}
+.radar-evidence b {
+  color: #d1eada;
+}
+.radar-bot {
+  padding: 10px;
+  border-left: 2px solid #6dabc3;
+}
+.arena-radar-body > .radar-question {
+  background: linear-gradient(130deg, #183f27, #10232a);
+  border-color: #40734f;
+}
+.arena-radar-body details {
+  font-size: 11px;
+  color: #a2bdaf;
+}
+.arena-radar-body summary {
+  padding: 12px 0;
+  cursor: pointer;
+}
+.arena-radar-body dl > div {
+  padding: 8px 0;
+  border-bottom: 1px solid #25382e;
+}
+.arena-radar-body dd {
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.arena-radar-panel > footer {
+  padding: 12px 22px;
+  border-top: 1px solid #294337;
+  color: #8eaa98;
+  font-size: 10px;
+  line-height: 1.6;
+}
+.arena-radar-panel button:focus-visible,
+.arena-radar-panel summary:focus-visible {
+  outline: 2px solid #69e3b6;
+  outline-offset: 3px;
+}
+@media (max-width: 1360px) {
+  .arena-radar-panel {
+    top: 133px;
+  }
+}
+@media (max-width: 760px) {
+  .arena-radar-panel {
+    top: auto;
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    left: 8px;
+    right: 8px;
+    width: auto;
+    height: 76dvh;
+    max-height: calc(100dvh - 145px);
+  }
+  .arena-radar-panel > header,
+  .arena-radar-body {
+    padding: 16px;
+  }
+  .radar-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 380px) {
+  .arena-radar-panel {
+    bottom: calc(120px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 165px);
+  }
+}
+
+.arena-radar-body {
+  flex: 1;
+}
+.arena-radar-panel > header,
+.arena-radar-panel > footer {
+  flex-shrink: 0;
+}

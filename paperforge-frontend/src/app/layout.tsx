@@ -13,6 +13,7 @@ import "@/styles/table-theme.css";
 import "@/styles/bot-competition.css";
 import "@/styles/bot-guide.css";
 import "@/styles/arena-debrief.css";
+import "@/styles/arena-radar.css";
 import "@/styles/leaderboards.css";
 import "@/styles/auth.css";
 import "@/styles/header.css";

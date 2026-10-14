@@ -1,3 +1,5 @@
+import {radarPrompt,radarSchema,validateRadarContent,type RadarContent} from '../arena-radar/radar-output.js';
+import type {RadarFacts} from '../arena-radar/radar-facts.js';
 import { debriefPrompt, debriefSchema, validateDebrief, type DebriefContent } from '../arena-debriefs/debrief-output.js';
 import type { ArenaFacts } from '../arena-debriefs/arena-facts.js';
 import { riskPrompt, RISK_SCHEMA, validateRiskContent, type RiskContent } from '../trade-risk/risk-output.js';
@@ -137,6 +139,18 @@ export class GeminiReviewProvider {
       let value:unknown;try{value=JSON.parse(output);}catch{throw new BadGatewayException({code:'INVALID_DEBRIEF',message:'The AI returned an unreadable debrief. Please try again.'});}
       return validateDebrief(value,facts);
     }catch(cause){if(cause instanceof HttpException)throw cause;if(cause instanceof Error&&['TimeoutError','AbortError'].includes(cause.name))throw new GatewayTimeoutException({code:'AI_TIMEOUT',message:'The debrief took too long. Please try again.'});throw new ServiceUnavailableException({code:'AI_UNAVAILABLE',message:'The AI service could not be reached. Please try again.'});}
+  }
+  async generateRadar(facts:RadarFacts):Promise<RadarContent>{
+    const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim(),model=this.model;
+    if(!key||!this.supportsStructuredOutput(model))throw new ServiceUnavailableException({code:'AI_CONFIGURATION',message:'Arena Radar needs a configured key and a model supporting structured output.'});
+    try{
+      const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},signal:AbortSignal.timeout(REVIEW_TIMEOUT_MS),body:JSON.stringify({contents:[{role:'user',parts:[{text:radarPrompt(facts)}]}],generationConfig:{temperature:.2,maxOutputTokens:1536,responseMimeType:'application/json',responseSchema:radarSchema(facts),...(model.startsWith('gemini-2.5-flash')?{thinkingConfig:{thinkingBudget:0}}:{})}})});
+      if(!response.ok){const reason=await this.providerReason(response);const code=response.status===429?'AI_RATE_LIMIT':response.status===402?'AI_BILLING':[400,401,403,404].includes(response.status)?'AI_CONFIGURATION':'AI_UNAVAILABLE';const message=code==='AI_RATE_LIMIT'?'The AI quota is currently exhausted. Please try again later.':code==='AI_BILLING'?'The AI provider reports a billing or credit limit for this key.':code==='AI_CONFIGURATION'?'The AI service could not accept the configured key or model.':'The AI service is temporarily unavailable. Please try again.';throw new ServiceUnavailableException({code,providerStatus:response.status,...(reason?{providerReason:reason}:{}),message});}
+      const data=await response.json()as{candidates?:{finishReason?:string;content?:{parts?:{text?:string;thought?:boolean}[]}}[]};const c=data.candidates?.[0],output=c?.content?.parts?.filter(p=>!p.thought).map(p=>p.text??'').join('')??'';
+      if(c?.finishReason!=='STOP'||output.length>12000)throw new BadGatewayException({code:'INVALID_RADAR',message:'The AI could not finish a usable radar. Please try again.'});
+      let value:unknown;try{value=JSON.parse(output);}catch{throw new BadGatewayException({code:'INVALID_RADAR',message:'The AI returned an unreadable radar. Please try again.'});}
+      return validateRadarContent(value,facts);
+    }catch(cause){if(cause instanceof HttpException)throw cause;if(cause instanceof Error&&['TimeoutError','AbortError'].includes(cause.name))throw new GatewayTimeoutException({code:'AI_TIMEOUT',message:'The radar took too long. Please try again.'});throw new ServiceUnavailableException({code:'AI_UNAVAILABLE',message:'The AI service could not be reached. Please try again.'});}
   }
   async generate(facts:TradeFacts): Promise<ReviewContent> {
     const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim();

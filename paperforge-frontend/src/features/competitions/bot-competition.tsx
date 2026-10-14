@@ -34,6 +34,7 @@ import { FinalMinuteDialog } from "./final-minute-dialog";
 import { UserTerminal } from "./competition-terminal";
 import { Activity } from "./activity";
 import { PositionDialog } from "./position-dialog";
+import { ArenaRadar } from "./arena-radar";
 import { Results } from "./results";
 
 export function BotCompetition({
@@ -43,6 +44,8 @@ export function BotCompetition({
   profileName,
   onPortfolio,
 }: any) {
+  const [radarOpen,setRadarOpen]=useState(false);
+  const radarTrigger=useRef<HTMLButtonElement|null>(null);
   const [guideOpen, setGuideOpen] = useState(false), [guideArena, setGuideArena] = useState(false);
   const guideTrigger = useRef<HTMLButtonElement | null>(null);
   function openGuide(event: MouseEvent<HTMLButtonElement>) { guideTrigger.current = event.currentTarget; setGuideArena(screen === "arena" && lobby?.status === "active"); setGuideOpen(true); }
@@ -222,6 +225,7 @@ export function BotCompetition({
     ];
   }
   function startLobby() {
+    setRadarOpen(false);
     if (busy.current) return;
     busy.current = true;
     const s = {
@@ -633,6 +637,7 @@ export function BotCompetition({
         ))}
       </section>
       <div className="bc-standings-top">
+        <button type="button" className="bot-guide-button arena-radar-trigger" ref={radarTrigger} aria-expanded={radarOpen} aria-controls="arena-radar-title" onClick={()=>setRadarOpen(true)}>Arena Radar <span aria-hidden="true">&#9678;</span></button>
         <Standings
           players={ranked}
           quotes={quotes}
@@ -712,7 +717,7 @@ export function BotCompetition({
     </div>
   );
   }
-  return <>{renderScreen()}<BotGuide open={guideOpen} dismiss={() => setGuideOpen(false)} trigger={guideTrigger} participants={guideArena ? lobby?.players.filter(p => !p.isUser).map(p => p.name) : undefined} finished={Boolean(guideArena && lobby?.status === "finished")}/></>;
+  return <>{renderScreen()}{lobby&&<ArenaRadar key={lobby.start} lobby={lobby} quotes={quotes} feed={feed} open={radarOpen} close={()=>setRadarOpen(false)} trigger={radarTrigger}/>}<BotGuide open={guideOpen} dismiss={() => setGuideOpen(false)} trigger={guideTrigger} participants={guideArena ? lobby?.players.filter(p => !p.isUser).map(p => p.name) : undefined} finished={Boolean(guideArena && lobby?.status === "finished")}/></>;
 }
 
 function formatTime(ms: number) {
