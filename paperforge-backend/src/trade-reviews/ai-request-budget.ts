@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-/** Shared by both AI features, within one backend process only. */
+/** Shared by all on-demand AI features, within one backend process only. */
 @Injectable()
 export class AiRequestBudget {
   private readonly users = new Map<string, { start: number; count: number; concurrent: number }>();

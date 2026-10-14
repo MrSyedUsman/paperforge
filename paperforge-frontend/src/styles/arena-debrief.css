@@ -1,0 +1,369 @@
+.arena-debrief-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 11px 18px;
+  border: 1px solid #4ee1ac !important;
+  border-radius: 9px;
+  background: linear-gradient(125deg, #174631, #113028) !important;
+  color: #c4f6df !important;
+  font-size: 13px;
+  font-weight: 700;
+}
+.arena-debrief-button span {
+  font-size: 20px;
+}
+.arena-debrief-button:hover {
+  background: #1b5037 !important;
+}
+.arena-debrief-panel {
+  position: fixed;
+  z-index: 110;
+  top: 100px;
+  bottom: 16px;
+  right: 16px;
+  width: min(850px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #365c4b;
+  border-radius: 18px;
+  background: #0b151c;
+  color: #dcece4;
+  box-shadow: 0 24px 100px #000a;
+  overflow: hidden;
+  text-align: left;
+}
+.arena-debrief-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 26px;
+  border-bottom: 1px solid #294337;
+  background: linear-gradient(125deg, #153b28, #0d1d24);
+  flex-shrink: 0;
+}
+.arena-debrief-heading h2 {
+  font-size: 28px;
+  margin: 7px 0;
+  letter-spacing: -0.6px;
+}
+.arena-debrief-heading h2:focus {
+  outline: none !important;
+}
+.arena-debrief-heading p {
+  font-size: 12px;
+  color: #a2bdb0;
+  line-height: 1.6;
+  margin: 0;
+}
+.arena-debrief-body {
+  padding: 22px 26px;
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.arena-debrief-panel button:focus-visible,
+.arena-debrief-panel summary:focus-visible,
+.arena-debrief-button:focus-visible {
+  outline: 2px solid #69e3b6;
+  outline-offset: 3px;
+}
+.arena-debrief-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.arena-debrief-context > span {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border: 1px solid #39674d;
+  border-radius: 100px;
+  background: #1b3527;
+  color: #b9eecb;
+}
+.arena-debrief-context small {
+  font-size: 11px;
+  color: #a3b6ab;
+}
+.arena-debrief-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.arena-debrief-kpis > div {
+  min-width: 0;
+  border: 1px solid #2b4438;
+  border-radius: 10px;
+  padding: 12px;
+  background: #10221a;
+}
+.arena-debrief-kpis span,
+.arena-debrief-kpis small {
+  display: block;
+  font-size: 10px;
+  line-height: 1.5;
+  color: #9eb7a9;
+}
+.arena-debrief-kpis b {
+  display: block;
+  font: 700 17px var(--mono);
+  margin: 8px 0;
+  color: #e2f2e8;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-participation {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0 16px;
+  font-size: 12px;
+  color: #b1cfbd;
+}
+.arena-debrief-participation span {
+  font-size: 10px;
+  color: #91ac9e;
+}
+.arena-debrief-scoreboard {
+  border: 1px solid #2b4237;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+.arena-debrief-scoreboard summary {
+  padding: 13px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.arena-debrief-scoreboard summary > span {
+  color: #8da99b;
+  font-size: 10px;
+  margin-left: 8px;
+}
+.arena-debrief-scoreboard article {
+  padding: 12px;
+  border-top: 1px solid #253c31;
+}
+.arena-debrief-scoreboard article.is-user {
+  background: #193c28;
+}
+.arena-debrief-scoreboard article.is-mirror {
+  background: #152a33;
+}
+.arena-debrief-scoreboard article > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+.arena-debrief-scoreboard b {
+  font-size: 12px;
+}
+.arena-debrief-scoreboard small,
+.arena-debrief-scoreboard article > span {
+  font-size: 10px;
+  color: #9cb8a8;
+}
+.arena-debrief-scoreboard dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 9px 0;
+}
+.arena-debrief-scoreboard dt {
+  font-size: 10px;
+  color: #93ae9f;
+}
+.arena-debrief-scoreboard dd {
+  font: 600 12px var(--mono);
+  margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-step {
+  display: block;
+  color: #6dd6ac;
+  font: 700 10px var(--mono);
+  letter-spacing: 0.09em;
+}
+.arena-debrief-body > section {
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid #2b4337;
+  border-radius: 12px;
+  background: #0e1c22;
+}
+.arena-debrief-body p,
+.arena-debrief-limitations li {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #b5cbbf;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-body h3 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #e1eee7;
+}
+.arena-debrief-body h3 small {
+  font-size: 11px;
+  color: #9bb6a7;
+  margin-left: 8px;
+}
+.arena-debrief-selection {
+  font-size: 11px !important;
+  color: #94ad9f !important;
+}
+.arena-debrief-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+.arena-debrief-evidence > span {
+  max-width: 100%;
+  padding: 7px 9px;
+  border: 1px solid #2b4238;
+  border-radius: 7px;
+  background: #17312544;
+  color: #a1c4b0;
+  font-size: 10px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-evidence b {
+  color: #d1eada;
+}
+.arena-debrief-evidence small {
+  display: block;
+  font-size: 9px;
+  color: #7e9c8b;
+}
+.arena-debrief-contrasts article + article {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid #253e31;
+}
+.arena-debrief-recorded {
+  font-size: 11px !important;
+  border-left: 2px solid #5b9c83;
+  padding-left: 12px;
+}
+.arena-debrief-trade-numbers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  padding: 12px;
+  background: #10271b;
+  border-radius: 9px;
+}
+.arena-debrief-trade-numbers span {
+  font-size: 10px;
+  color: #9bb8a8;
+}
+.arena-debrief-trade-numbers b {
+  display: block;
+  font: 700 15px var(--mono);
+  margin-top: 5px;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-body > .arena-debrief-mission {
+  background: linear-gradient(130deg, #183f27, #10232a);
+  border-color: #40734f;
+}
+.arena-debrief-mission > div {
+  padding: 13px;
+  border-radius: 8px;
+  background: #0a1c1380;
+  font-size: 12px;
+}
+.arena-debrief-limitations {
+  color: #91ab9d;
+  font-size: 11px;
+}
+.arena-debrief-limitations summary {
+  min-height: 40px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+.arena-debrief-limitations li {
+  font-size: 11px;
+}
+.arena-debrief-limitations dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 7px 0;
+  border-bottom: 1px solid #25382e;
+}
+.arena-debrief-limitations dd {
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.arena-debrief-timing {
+  font-size: 10px !important;
+  color: #8fa99a !important;
+}
+.arena-debrief-footer {
+  padding: 12px 26px;
+  border-top: 1px solid #294337;
+  color: #8eaa98;
+  font-size: 10px;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+@media (max-width: 1360px) {
+  .arena-debrief-panel {
+    top: 133px;
+  }
+}
+@media (max-width: 760px) {
+  .arena-debrief-panel {
+    top: auto;
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    right: 8px;
+    left: 8px;
+    width: auto;
+    height: min(78dvh, 900px);
+    max-height: calc(100dvh - 145px);
+    border-radius: 16px;
+  }
+  .arena-debrief-heading,
+  .arena-debrief-body {
+    padding: 16px;
+  }
+  .arena-debrief-heading h2 {
+    font-size: 23px;
+  }
+  .arena-debrief-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .arena-debrief-scoreboard article > div {
+    flex-direction: column;
+  }
+  .arena-debrief-scoreboard dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .arena-debrief-body > section {
+    padding: 14px;
+  }
+  .arena-debrief-footer {
+    padding: 10px 16px;
+  }
+  .arena-debrief-limitations dl > div {
+    display: block;
+  }
+  .arena-debrief-limitations dd {
+    text-align: left;
+    margin-top: 4px;
+  }
+}
+@media (max-width: 380px) {
+  .arena-debrief-panel {
+    bottom: calc(120px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 160px);
+  }
+}

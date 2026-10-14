@@ -365,6 +365,7 @@ export function BotCompetition({
       next: Lobby = {
         ...lobby,
         status: "finished",
+        completionReason: "abandonment",
         finalized: Date.now(),
         players,
         events: [

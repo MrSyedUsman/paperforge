@@ -63,6 +63,7 @@ export function settleLobby(current: Lobby, quotes: Record<string, Quote>): Lobb
     const next = {
       ...current,
       status: "finished" as const,
+      completionReason: Date.now() >= current.end ? "time" as const : "elimination" as const,
       finalized: Date.now(),
       players,
       events: [

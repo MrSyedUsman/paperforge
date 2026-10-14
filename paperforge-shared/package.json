@@ -7,10 +7,16 @@
     ".": {
       "types": "./simulation.d.ts",
       "default": "./simulation.js"
+    },
+    "./bots": {
+      "types": "./bots.d.ts",
+      "default": "./bots.js"
     }
   },
   "files": [
     "simulation.js",
-    "simulation.d.ts"
+    "simulation.d.ts",
+    "bots.js",
+    "bots.d.ts"
   ]
 }

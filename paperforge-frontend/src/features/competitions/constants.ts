@@ -1,3 +1,4 @@
+import { BOT_CATALOG } from '@paperforge/simulation/bots';
 import type { Settings, Stats, Difficulty } from "./types";
 export const KEY = "paperforge-bot-lobby-v1",
   STATS = "paperforge-bot-stats-v1",
@@ -11,24 +12,8 @@ export const KEY = "paperforge-bot-lobby-v1",
     "ADAUSDT",
     "AVAXUSDT",
   ];
-export const NAMES = [
-    "TrendFox",
-    "NovaQuant",
-    "CandleByte",
-    "RiskRaven",
-    "MomentumX",
-    "DeltaBot",
-    "AtlasAlgo",
-  ],
-  STRATEGIES = [
-    "Trend follower",
-    "Momentum trader",
-    "Breakout trader",
-    "Mean-reversion trader",
-    "Conservative trader",
-    "Adaptive trader",
-    "Volatility trader",
-  ];
+export const NAMES = BOT_CATALOG.map(bot => bot.name),
+  STRATEGIES = BOT_CATALOG.map(bot => bot.style);
 export const defaults: Settings = {
   name: "Quick Practice Arena",
   duration: 10,

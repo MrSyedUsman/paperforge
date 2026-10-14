@@ -13,6 +13,7 @@ and compete against simulated opponents. No real-money orders are placed.
 - Optional pre-trade risk checks with calculated scenarios and concise Gemini explanations.
 - On-demand Gemini reviews of completed normal trades, with evidence, a lesson, and a practice exercise.
 - Timed competitions against seven distinct rule-based bot strategies, with eligibility-aware pacing, decision explanations, separate wallets, standings, and result cards.
+- On-demand [Arena Debrief](docs/arena-debrief.md) for completed competitions, with calculated evidence, bot comparisons, and a next-arena mission.
 - Browser-local profiles and leaderboards with sample benchmark participants.
 - Virtual starting balance of $1,000 and a $50 faucet every six hours.
 

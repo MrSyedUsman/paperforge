@@ -1,3 +1,4 @@
+import { competitionEligibility, compareCompetitionScores } from '@paperforge/simulation';
 import { trimBotTradeMetadata } from './bot-state.ts';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Quote } from "@/lib/market-data/markets";
@@ -60,12 +61,12 @@ export function tradedMarginFor(player: Player) {
 export function eligibilityFor(player: Player, allocation: number) {
   const opened = (player.positions?.length || 0) + (player.trades?.length || 0),
     used = tradedMarginFor(player),
-    required = roundMoney(allocation * 0.5);
+    required = competitionEligibility(opened, used, allocation).required;
   return {
     opened,
     used,
     required,
-    eligible: opened >= 1 && used >= required,
+    eligible: competitionEligibility(opened, used, allocation).eligible,
     reason:
       opened < 1
         ? "No trade was opened."
@@ -76,10 +77,7 @@ export function rankPlayers(players: Player[], quotes: Record<string, Quote>) {
   return [...players]
     .sort(
       (a, b) =>
-        equityFor(b, quotes) - equityFor(a, quotes) ||
-        b.realized - a.realized ||
-        a.fees - b.fees ||
-        a.achieved - b.achieved,
+        compareCompetitionScores({equity:equityFor(a,quotes),realized:a.realized,fees:a.fees,achieved:a.achieved},{equity:equityFor(b,quotes),realized:b.realized,fees:b.fees,achieved:b.achieved}),
     )
     .map((p, i) => ({ ...p, previousRank: p.rank, rank: i + 1 }));
 }
@@ -93,10 +91,7 @@ export function rankFinalPlayers(
       (a, b) =>
         Number(eligibilityFor(b, allocation).eligible) -
           Number(eligibilityFor(a, allocation).eligible) ||
-        equityFor(b, quotes) - equityFor(a, quotes) ||
-        b.realized - a.realized ||
-        a.fees - b.fees ||
-        a.achieved - b.achieved,
+        compareCompetitionScores({equity:equityFor(a,quotes),realized:a.realized,fees:a.fees,achieved:a.achieved},{equity:equityFor(b,quotes),realized:b.realized,fees:b.fees,achieved:b.achieved}),
     )
     .map((p, i) => ({ ...p, previousRank: p.rank, rank: i + 1 }));
 }

@@ -65,6 +65,7 @@ export type Event = {
   tone?: "up" | "down" | "info";
 };
 export type Lobby = {
+  completionReason?: "time" | "elimination" | "abandonment";
   botHistory?: PriceHistory;
   version: number;
   feeAccounting?: number;
