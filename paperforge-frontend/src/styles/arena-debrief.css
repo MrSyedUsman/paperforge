@@ -9,7 +9,7 @@
   border-radius: 9px;
   background: linear-gradient(125deg, #174631, #113028) !important;
   color: #c4f6df !important;
-  font-size: 13px;
+  font-size: var(--ai-copy);
   font-weight: 700;
 }
 .arena-debrief-button span {
@@ -54,7 +54,7 @@
   outline: none !important;
 }
 .arena-debrief-heading p {
-  font-size: 12px;
+  font-size: var(--ai-meta);
   color: #a2bdb0;
   line-height: 1.6;
   margin: 0;
@@ -80,7 +80,7 @@
   margin-bottom: 16px;
 }
 .arena-debrief-context > span {
-  font-size: 12px;
+  font-size: var(--ai-meta);
   font-weight: 700;
   padding: 6px 10px;
   border: 1px solid #39674d;
@@ -89,7 +89,7 @@
   color: #b9eecb;
 }
 .arena-debrief-context small {
-  font-size: 11px;
+  font-size: var(--ai-meta);
   color: #a3b6ab;
 }
 .arena-debrief-kpis {
@@ -107,13 +107,13 @@
 .arena-debrief-kpis span,
 .arena-debrief-kpis small {
   display: block;
-  font-size: 10px;
+  font-size: var(--ai-label);
   line-height: 1.5;
   color: #9eb7a9;
 }
 .arena-debrief-kpis b {
   display: block;
-  font: 700 17px var(--mono);
+  font: 700 var(--ai-value) var(--mono);
   margin: 8px 0;
   color: #e2f2e8;
   overflow-wrap: anywhere;
@@ -122,11 +122,11 @@
   display: grid;
   gap: 5px;
   margin: 12px 0 16px;
-  font-size: 12px;
+  font-size: var(--ai-meta);
   color: #b1cfbd;
 }
 .arena-debrief-participation span {
-  font-size: 10px;
+  font-size: var(--ai-label);
   color: #91ac9e;
 }
 .arena-debrief-scoreboard {
@@ -136,12 +136,12 @@
 }
 .arena-debrief-scoreboard summary {
   padding: 13px;
-  font-size: 12px;
+  font-size: var(--ai-meta);
   cursor: pointer;
 }
 .arena-debrief-scoreboard summary > span {
   color: #8da99b;
-  font-size: 10px;
+  font-size: var(--ai-label);
   margin-left: 8px;
 }
 .arena-debrief-scoreboard article {
@@ -160,11 +160,11 @@
   gap: 8px;
 }
 .arena-debrief-scoreboard b {
-  font-size: 12px;
+  font-size: var(--ai-meta);
 }
 .arena-debrief-scoreboard small,
 .arena-debrief-scoreboard article > span {
-  font-size: 10px;
+  font-size: var(--ai-label);
   color: #9cb8a8;
 }
 .arena-debrief-scoreboard dl {
@@ -174,18 +174,18 @@
   margin: 9px 0;
 }
 .arena-debrief-scoreboard dt {
-  font-size: 10px;
+  font-size: var(--ai-label);
   color: #93ae9f;
 }
 .arena-debrief-scoreboard dd {
-  font: 600 12px var(--mono);
+  font: 600 var(--ai-value) var(--mono);
   margin: 4px 0;
   overflow-wrap: anywhere;
 }
 .arena-debrief-step {
   display: block;
   color: #6dd6ac;
-  font: 700 10px var(--mono);
+  font: 700 var(--ai-label) var(--mono);
   letter-spacing: 0.09em;
 }
 .arena-debrief-body > section {
@@ -197,8 +197,8 @@
 }
 .arena-debrief-body p,
 .arena-debrief-limitations li {
-  font-size: 13px;
-  line-height: 1.8;
+  font-size: var(--ai-copy);
+  line-height: 1.65;
   color: #b5cbbf;
   overflow-wrap: anywhere;
 }
@@ -208,12 +208,12 @@
   color: #e1eee7;
 }
 .arena-debrief-body h3 small {
-  font-size: 11px;
+  font-size: var(--ai-meta);
   color: #9bb6a7;
   margin-left: 8px;
 }
 .arena-debrief-selection {
-  font-size: 11px !important;
+  font-size: var(--ai-meta) !important;
   color: #94ad9f !important;
 }
 .arena-debrief-evidence {
@@ -229,7 +229,7 @@
   border-radius: 7px;
   background: #17312544;
   color: #a1c4b0;
-  font-size: 10px;
+  font-size: var(--ai-label);
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
@@ -238,7 +238,7 @@
 }
 .arena-debrief-evidence small {
   display: block;
-  font-size: 9px;
+  font-size: var(--ai-label);
   color: #7e9c8b;
 }
 .arena-debrief-contrasts article + article {
@@ -247,7 +247,7 @@
   border-top: 1px solid #253e31;
 }
 .arena-debrief-recorded {
-  font-size: 11px !important;
+  font-size: var(--ai-meta) !important;
   border-left: 2px solid #5b9c83;
   padding-left: 12px;
 }
@@ -260,12 +260,12 @@
   border-radius: 9px;
 }
 .arena-debrief-trade-numbers span {
-  font-size: 10px;
+  font-size: var(--ai-label);
   color: #9bb8a8;
 }
 .arena-debrief-trade-numbers b {
   display: block;
-  font: 700 15px var(--mono);
+  font: 700 var(--ai-value) var(--mono);
   margin-top: 5px;
   overflow-wrap: anywhere;
 }
@@ -277,11 +277,11 @@
   padding: 13px;
   border-radius: 8px;
   background: #0a1c1380;
-  font-size: 12px;
+  font-size: var(--ai-meta);
 }
 .arena-debrief-limitations {
   color: #91ab9d;
-  font-size: 11px;
+  font-size: var(--ai-meta);
 }
 .arena-debrief-limitations summary {
   min-height: 40px;
@@ -289,7 +289,7 @@
   padding: 8px 0;
 }
 .arena-debrief-limitations li {
-  font-size: 11px;
+  font-size: var(--ai-meta);
 }
 .arena-debrief-limitations dl > div {
   display: flex;
@@ -304,14 +304,14 @@
   overflow-wrap: anywhere;
 }
 .arena-debrief-timing {
-  font-size: 10px !important;
+  font-size: var(--ai-label) !important;
   color: #8fa99a !important;
 }
 .arena-debrief-footer {
   padding: 12px 26px;
   border-top: 1px solid #294337;
   color: #8eaa98;
-  font-size: 10px;
+  font-size: var(--ai-label);
   line-height: 1.6;
   flex-shrink: 0;
 }
