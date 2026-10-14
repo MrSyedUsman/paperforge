@@ -1,3 +1,5 @@
+import { riskPrompt, RISK_SCHEMA, validateRiskContent, type RiskContent } from '../trade-risk/risk-output.js';
+import type { RiskFacts } from '../trade-risk/risk-facts.js';
 import { BadGatewayException, GatewayTimeoutException, Inject, Injectable, Logger, ServiceUnavailableException, HttpException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { TradeFacts } from './trade-facts.js';
@@ -88,6 +90,38 @@ export class GeminiReviewProvider {
   /** Worth trying another model: not found, a server error from Google, a timeout or a network failure. */
   private shouldTryAnotherModel(outcome:Response|Error): boolean {
     return outcome instanceof Error||outcome.status===404||outcome.status>=500;
+  }
+  /** A single bounded request to the configured model. No retries, discovery or model fallback. */
+  async generateRisk(facts: RiskFacts): Promise<RiskContent> {
+    const key = this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g, '').trim();
+    if (!key) throw new ServiceUnavailableException({ code: 'AI_CONFIGURATION', message: 'AI risk checks are not configured on the server.' });
+    const model = this.model;
+    if (!this.supportsStructuredOutput(model)) throw new ServiceUnavailableException({ code: 'AI_CONFIGURATION', message: 'The configured model must support structured output for risk checks.' });
+    try {
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key }, signal: AbortSignal.timeout(REVIEW_TIMEOUT_MS),
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: riskPrompt(facts) }] }], generationConfig: {
+          temperature: .2, maxOutputTokens: 2048, responseMimeType: 'application/json', responseSchema: RISK_SCHEMA,
+          ...(model.startsWith('gemini-2.5-flash') ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+        } }),
+      });
+      if (!response.ok) {
+        const providerReason = await this.providerReason(response);
+        const message = response.status === 402 ? 'The AI provider reports a billing or credit limit for this key. Please contact the app administrator.' : response.status === 429 ? 'The AI quota is currently exhausted. Please try again later.' : [400, 401, 403, 404].includes(response.status) ? 'The AI service could not accept the configured key or model.' : 'The AI service is temporarily unavailable. Please try again.';
+        throw new ServiceUnavailableException({ code: response.status === 429 ? 'AI_RATE_LIMIT' : 'AI_UNAVAILABLE', providerStatus: response.status, ...(providerReason ? { providerReason } : {}), message });
+      }
+      const data = await response.json() as { candidates?: { finishReason?: string; content?: { parts?: { text?: string; thought?: boolean }[] } }[] };
+      const candidate = data.candidates?.[0];
+      const output = candidate?.content?.parts?.filter(p => !p.thought).map(p => p.text || '').join('') || '';
+      if (candidate?.finishReason !== 'STOP' || output.length > 6000) throw new BadGatewayException({ code: 'INVALID_RISK_CHECK', message: 'The AI could not finish a usable risk explanation. Please try again.' });
+      let value: unknown;
+      try { value = JSON.parse(output); } catch { throw new BadGatewayException({ code: 'INVALID_RISK_CHECK', message: 'The AI returned an unreadable risk explanation. Please try again.' }); }
+      return validateRiskContent(value, facts);
+    } catch (cause) {
+      if (cause instanceof HttpException) throw cause;
+      if (cause instanceof Error && ['TimeoutError', 'AbortError'].includes(cause.name)) throw new GatewayTimeoutException({ code: 'AI_TIMEOUT', message: 'The AI took too long. Please try again.' });
+      throw new ServiceUnavailableException({ code: 'AI_UNAVAILABLE', message: 'The AI service could not be reached. Please try again.' });
+    }
   }
   async generate(facts:TradeFacts): Promise<ReviewContent> {
     const key=this.config.get<string>('GEMINI_API_KEY')?.trim().replace(/^["']+|["']+$/g,'').trim();

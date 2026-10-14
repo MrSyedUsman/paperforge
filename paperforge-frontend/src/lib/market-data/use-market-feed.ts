@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
+import { LIVE_PRICE_MAX_AGE_MS } from "@paperforge/simulation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fallbackMarkets, normalizeMarkets, normalizeTicker, type Market, type Quote } from "./markets";
 import { fetchFirst } from "./client";
@@ -136,7 +137,7 @@ export function useMarketFeed() {
   }, [markets]);
   useEffect(() => {
     const stale = setInterval(() => {
-      if (lastUpdate && Date.now() - lastUpdate > 45000)
+      if (lastUpdate && Date.now() - lastUpdate > LIVE_PRICE_MAX_AGE_MS)
         setFeed(navigator.onLine ? "delayed" : "offline");
     }, 5000);
     const online = () => {

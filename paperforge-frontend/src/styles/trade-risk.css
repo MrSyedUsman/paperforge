@@ -1,0 +1,27 @@
+.trade-risk-action { margin:16px 0; }
+.trade-risk-button { width:100%;min-height:44px;padding:12px;border:1px solid #39d8a066;border-radius:10px;background:#39d8a012;color:#baf5df;font-weight:650; }
+.trade-risk-button:hover:not(:disabled) { background:#39d8a028;border-color:#66dfb5; }
+.trade-risk-action > small { display:block;margin-top:8px;color:#9cb5ab;font-size:11px;line-height:1.5; }
+.trade-risk-action button:disabled,.trade-risk-panel button:disabled { opacity:.5;cursor:not-allowed; }
+.trade-risk-panel :is(button,summary):focus-visible,.trade-risk-button:focus-visible { outline:2px solid #66dfb5;outline-offset:3px; }
+.trade-risk-outdated { padding:14px;margin-bottom:16px;border:1px solid #806438;border-radius:10px;background:#2a2416;color:#f3d69b; }
+.trade-risk-outdated p,.trade-risk-scenarios > p { font-size:12px;line-height:1.6; }
+.trade-risk-outdated button { min-height:44px;border:1px solid #806438;border-radius:8px;padding:8px 12px; }
+.trade-risk-section-title,.trade-risk-scenarios h3 { font-size:16px;margin:16px 0 12px; }
+.trade-risk-scenarios { margin-bottom:20px; }
+.trade-risk-scenarios > p { color:#a4bdb2; }
+.trade-risk-scenarios article { margin:10px 0;padding:14px;border:1px solid #2b4238;border-radius:10px;background:#102019; }
+.trade-risk-scenarios article.adverse { background:#221a1d;border-color:#4f343b; }
+.trade-risk-scenarios h4 { margin:0;color:#c3e9d8;font-size:13px; }
+.trade-risk-scenarios .adverse h4 { color:#f1b5be; }
+.trade-risk-scenarios article p,.trade-risk-scenarios article small { color:#a8bcb4;font-size:11px;line-height:1.6;overflow-wrap:anywhere; }
+.trade-risk-scenarios dl { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 0; }
+.trade-risk-scenarios dt { color:#9bb5a8;font-size:10px; }
+.trade-risk-scenarios dd { margin:4px 0 0;font:650 12px var(--mono);overflow-wrap:anywhere; }
+@media(max-width:380px) { .trade-risk-scenarios dl { grid-template-columns:1fr; } .trade-risk-scenarios dl div { display:flex;justify-content:space-between;gap:10px; } }
+
+/* Keep the order form reachable beside the desktop review. */
+@media(min-width:761px) { .trade-risk-panel { left:16px;right:auto;width:min(480px,calc(100vw - 432px)); } }
+.trade-risk-panel { text-align:left; }
+.trade-risk-panel p { text-align:left; }
+.trade-risk-panel .ai-review-footer { flex-shrink:0;height:auto;min-height:0;margin:0;padding:12px 20px; }

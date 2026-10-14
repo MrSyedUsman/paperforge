@@ -36,3 +36,5 @@ export function settleIsolatedLiquidation({ margin, notional, openFee = 0,
     netPnl: Math.round((-safeMargin - Math.max(0, Number(openFee) || 0)) * 100) / 100,
   };
 }
+
+export const LIVE_PRICE_MAX_AGE_MS = 45_000;

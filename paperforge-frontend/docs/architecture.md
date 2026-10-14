@@ -112,3 +112,5 @@ server. The automated test suite does not depend on Binance availability.
 - The competition "All eligible" setting currently selects major markets.
 - The chart's "EMA 20" label currently represents a rolling simple average.
 - Live data depends on Binance connectivity; local results are unverified.
+
+Optional pre-trade checks share the backend AI allowance and simulator formulas; see [Pre-trade risk checks](ai-trade-risk.md).

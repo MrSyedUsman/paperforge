@@ -15,3 +15,5 @@ export function calculateLiquidationPrice(input: LiquidationInput): number;
 export function settleIsolatedLiquidation(input: {
   margin: number; notional: number; openFee?: number; liquidationPrice: number; liquidationFeeRate?: number;
 }): { executionPrice: number; marginLost: number; liquidationFee: number; walletCredit: number; netPnl: number };
+
+export const LIVE_PRICE_MAX_AGE_MS: number;

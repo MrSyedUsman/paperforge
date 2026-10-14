@@ -1,7 +1,7 @@
 # PaperForge backend
 
 NestJS API for PaperForge sign-in, Firestore-backed user records, and Gemini
-reviews of completed normal paper trades. The default API address is
+reviews of completed normal paper trades and optional pre-trade risk checks. The default API address is
 http://localhost:4000/api.
 
 ## Local setup
@@ -35,6 +35,8 @@ In PowerShell use `npm.cmd` if script execution policy blocks `npm`.
 
 - `POST /api/auth/login`: sign in with username and password.
 - `GET /api/auth/me`: retrieve the signed-in user with a bearer token.
+- `POST /api/trade-risk/facts`: calculate a proposed-trade snapshot without Gemini.
+- `POST /api/trade-risk`: explain proposed-trade risk using Gemini.
 - `POST /api/trade-reviews`: request a completed-trade AI review with a bearer token.
 
 The review endpoint accepts only pair, direction, entry/exit, isolated margin,
@@ -52,7 +54,7 @@ simulation snapshots and do not certify balances or account history.
 ## Limits and failures
 
 - Generation happens only on a review request; no automatic trading.
-- Five new attempts per user per minute, at most two concurrent distinct reviews.
+- Both AI features share five new attempts per user per minute, at most two concurrent distinct generations per user and ten concurrent operations per process.
 - Concurrent identical requests share one Gemini operation.
 - Up to 500 successful reviews cached in process memory for 24 hours, keyed by
   authenticated user, normalized trade data, configured model, and prompt version.
@@ -78,4 +80,6 @@ consume provider quota; it prints sanitized results and never prints the key.
 The automated tests mock Gemini and do not access a live database or AI service.
 
 Production startup is `npm run start:prod` after building. Deployment is not part
-of this feature. Competition AI and pre-trade coaching are not implemented.
+of this feature. Competition AI is not implemented. Pre-trade checks are documented in [AI trade risk](../paperforge-frontend/docs/ai-trade-risk.md).
+
+`npm run verify:gemini:risk` makes a single synthetic risk request to the configured model, without automatic fallback or credential logging. Risk caches expire within 30 seconds; limits remain process-local.

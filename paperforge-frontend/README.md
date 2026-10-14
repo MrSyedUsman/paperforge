@@ -10,6 +10,7 @@ and compete against simulated opponents. No real-money orders are placed.
 - Long and Short paper market orders with leverage, fees, and isolated liquidation.
 - Interactive price charts with multiple styles and time ranges.
 - Portfolio, trade history, activity, and downloadable trade cards.
+- Optional pre-trade risk checks with calculated scenarios and concise Gemini explanations.
 - On-demand Gemini reviews of completed normal trades, with evidence, a lesson, and a practice exercise.
 - Timed bot competitions with separate wallets, standings, and result cards.
 - Browser-local profiles and leaderboards with sample benchmark participants.
@@ -104,3 +105,5 @@ Browser-local trade records remain unverified. Funding, slippage, intentions,
 and market history are not inferred. Missing exit prices or opening fees are
 acknowledged. Competition AI, pre-trade coaching, and automatic trading are not
 included. See [AI review architecture](docs/ai-trade-review.md).
+
+See [Pre-trade risk checks](docs/ai-trade-risk.md) for behaviour, limits and verification.
