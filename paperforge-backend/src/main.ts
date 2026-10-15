@@ -1,11 +1,11 @@
-import { json } from 'express';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module.js';
+import { configureBodyParsers } from './app.setup.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.use('/api/arena-debriefs', json({limit:'700kb'}));
-  app.use('/api/arena-radar',json({limit:'1400kb'}));
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { bodyParser: false });
+  configureBodyParsers(app);
   app.setGlobalPrefix('api');
   app.enableCors({
     origin: (process.env.FRONTEND_ORIGIN ?? 'http://localhost:3000').split(','),
