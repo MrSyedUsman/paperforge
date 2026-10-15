@@ -1,3 +1,4 @@
+import { captureAiPanel } from "./capture-ai-panel.mjs";
 // Isolated browser verification with synthetic market prices. No real account or Gemini calls.
 import { pairs, arena, quote } from "../tests/bot-fixtures.mjs";
 import { openFor } from "../src/features/competitions/engine.ts";
@@ -313,6 +314,7 @@ try {
   await call("Page.navigate", { url: base });
   await enter();
   const before = await finances();
+  await wait(`!!document.querySelector(".sim.live")`, "fresh synthetic market feed");
   await click(".arena-radar-trigger");
   await wait(`!!document.querySelector('.arena-radar-panel')`, "open");
   assert.equal(calls, 0);
@@ -347,6 +349,7 @@ try {
     await evaluate(`document.activeElement.matches('.bc-quit')`),
     "background usable",
   );
+  await captureAiPanel(call, ".arena-radar-body", "radar-desktop");
   await call("Page.captureScreenshot", { format: "png" }).then((r) =>
     fs.writeFileSync(
       path.join(os.tmpdir(), "paperforge-arena-radar-desktop.png"),
@@ -387,6 +390,8 @@ try {
       ),
     );
   }
+  await call("Emulation.setDeviceMetricsOverride", {width:390,height:844,deviceScaleFactor:1,mobile:true});
+  await captureAiPanel(call, ".arena-radar-body", "radar-mobile");
   await call("Page.captureScreenshot", { format: "png" }).then((r) =>
     fs.writeFileSync(
       path.join(os.tmpdir(), "paperforge-arena-radar-mobile.png"),

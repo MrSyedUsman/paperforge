@@ -1,3 +1,4 @@
+import { captureAiPanel } from "./capture-ai-panel.mjs";
 ﻿import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -68,7 +69,8 @@ try {
  await click('.side-tabs button:nth-child(2)');await wait(`!!document.querySelector('.trade-risk-outdated')`,'changed direction');assert.equal(requests.length,2);
  await click('.trade-risk-outdated button');await wait(`document.querySelector('.ai-trade-context')?.innerText.includes('Short') && !!document.querySelector('.ai-review-content')`,'short snapshot');
  await input('input[aria-label="Leverage"]','50');await wait(`!!document.querySelector('.trade-risk-outdated')`,'changed leverage');await click('.trade-risk-outdated button');await wait(`document.querySelector('.trade-risk-scenarios')?.innerText.includes('liquidates first') && !!document.querySelector('.ai-review-content')`,'liquidation example');
- await call('Page.captureScreenshot',{format:'png'}).then(r=>fs.writeFileSync(path.join(os.tmpdir(),'paperforge-risk-desktop.png'),Buffer.from(r.data,'base64')));
+ await captureAiPanel(call, ".ai-review-body", "risk-desktop");
+  await call('Page.captureScreenshot',{format:'png'}).then(r=>fs.writeFileSync(path.join(os.tmpdir(),'paperforge-risk-desktop.png'),Buffer.from(r.data,'base64')));
  await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape',code:'Escape'});await wait(`!document.querySelector('#trade-risk-panel')`,'Escape close');assert.ok(await evaluate(`document.activeElement?.classList.contains('trade-risk-button')`),'focus return');
  mode='error';await click('.trade-risk-button');await wait(`!!document.querySelector('.ai-review-error')`,'error');assert.ok(await evaluate(`!!document.querySelector('.trade-risk-scenarios')`),'facts survive failure');assert.equal(await evaluate(`!!document.querySelector('.ai-review-content')`),false,'no fabricated feedback');
  mode='success';await click('.ai-review-error button');await wait(`!!document.querySelector('.ai-review-content')`,'retry');await click('.ai-review-close');await click('.trade-risk-button');await wait(`document.querySelector('.ai-review-timing')?.innerText.includes('Saved explanation')`,'cache reuse');await click('.ai-review-close');
@@ -77,7 +79,8 @@ try {
  mode='hang';await click('.trade-risk-button');await wait(`document.querySelector('.ai-review-error')?.innerText.includes('too long')`,'deadline');await click('.ai-review-close');await evaluate(`window.setTimeout=window.__nativeTimeout`);
  mode='success';await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});await click('.trade-risk-button');await wait(`!!document.querySelector('.ai-review-content')`,'mobile result');
  const box=await evaluate(`(()=>{const r=document.querySelector('#trade-risk-panel').getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom,width:innerWidth,height:innerHeight}})()`);assert.ok(box.left>=0&&box.right<=box.width&&box.top>=0&&box.bottom<=box.height,'mobile bounds');
- await evaluate(`document.querySelector('.ai-review-body').scrollTop=99999`);await call('Page.captureScreenshot',{format:'png'}).then(r=>fs.writeFileSync(path.join(os.tmpdir(),'paperforge-risk-mobile.png'),Buffer.from(r.data,'base64')));
+ await evaluate(`document.querySelector('.ai-review-body').scrollTop=99999`);await captureAiPanel(call, ".ai-review-body", "risk-mobile");
+  await call('Page.captureScreenshot',{format:'png'}).then(r=>fs.writeFileSync(path.join(os.tmpdir(),'paperforge-risk-mobile.png'),Buffer.from(r.data,'base64')));
  await evaluate(`window.__fixtureEmit=false;window.__nativeNow=Date.now;Date.now=()=>window.__nativeNow()+46000`);await wait(`document.querySelector('.trade-risk-button').disabled && !!document.querySelector('.trade-risk-outdated')`,'stale price disabled');
  await evaluate(`Date.now=window.__nativeNow;window.__fixtureEmit=true`);await wait(`!document.querySelector('.trade-risk-button').disabled`,'price freshness recovery');
  await evaluate(`window.__fixturePrice=101`);await wait(`!!document.querySelector('.trade-risk-outdated')`,'changed price warning');

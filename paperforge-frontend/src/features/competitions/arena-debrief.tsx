@@ -10,6 +10,8 @@ import {
   type ArenaDebriefResponse,
 } from "./arena-debrief-contract";
 import { fetchArenaFacts, fetchArenaDebrief } from "./arena-debrief-api";
+import { DebriefVisualSummary } from "./arena-visuals";
+import { Takeaway, InsightIcon } from "@/components/ai-visuals";
 export function ArenaDebrief({ lobby }: { lobby: Lobby }) {
   const current = arenaDebriefSnapshot(lobby),
     currentKey = JSON.stringify(current);
@@ -280,16 +282,7 @@ function DebriefPanel({ snapshot, outdated, refresh, close }: PanelProps) {
                 This is separate from the net trading result above.
               </p>
             )}
-            <div className="arena-debrief-participation">
-              <b>
-                Participation: {money(user.usedMargin)} /{" "}
-                {money(user.requiredMargin)}
-              </b>
-              <span>
-                {user.trades} opened trade{user.trades === 1 ? "" : "s"}{" "}
-                &middot; cumulative margin, not leveraged notional
-              </span>
-            </div>
+            <DebriefVisualSummary facts={facts} user={user} mirror={mirror}/>
             <details className="arena-debrief-scoreboard">
               <summary>
                 Calculated arena scoreboard{" "}
@@ -381,13 +374,7 @@ function DebriefPanel({ snapshot, outdated, refresh, close }: PanelProps) {
             </small>
           </div>
         )}
-        {result && (
-          <section className="arena-debrief-story">
-            <span className="arena-debrief-step">01 / YOUR ARENA STORY</span>
-            <p>{result.review.story.text}</p>
-            {citations(result.review.story.evidenceIds)}
-          </section>
-        )}
+        {result && <Takeaway title="Your arena story / Gemini"><p>{result.review.story.text}</p>{citations(result.review.story.evidenceIds)}</Takeaway>}
         {result && (
           <section className="arena-debrief-contrasts">
             <span className="arena-debrief-step">
@@ -420,7 +407,7 @@ function DebriefPanel({ snapshot, outdated, refresh, close }: PanelProps) {
                 : `${mirror.averageLeverage}x`}
             </p>
             <p className="arena-debrief-recorded">
-              <b>Available recorded entry reason:</b>{" "}
+              <b>Recorded bot decision (not Gemini):</b>{" "}
               {facts.mirror.recordedReason ??
                 "No retained entry explanation is available for this bot."}
             </p>
@@ -477,7 +464,7 @@ function DebriefPanel({ snapshot, outdated, refresh, close }: PanelProps) {
             <span className="arena-debrief-step">
               05 / YOUR NEXT ARENA MISSION
             </span>
-            <h3>One process goal</h3>
+            <h3><InsightIcon kind="practice"/>One process goal</h3>
             <p>{result.review.mission.text}</p>
             <div>
               <b>Before the next arena, ask yourself</b>

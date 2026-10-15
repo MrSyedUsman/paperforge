@@ -4,6 +4,9 @@ import type { ClosedPos } from '@/features/account/types';
 import { useAuth } from '@/features/auth/auth-provider';
 import { fetchTradeReview, type TradeReviewResponse } from './trade-review-api';
 
+import { Takeaway, InsightIcon } from "@/components/ai-visuals";
+import { TradeResultVisual } from "./trade-review-visuals";
+
 type State={status:'loading'}|{status:'error';message:string}|{status:'ready';data:TradeReviewResponse};
 type Props={trade:ClosedPos;history:ClosedPos[];onSelect:(trade:ClosedPos)=>void;close:()=>void};
 export function TradeReviewPanel({trade,history,onSelect,close}:Props) {
@@ -52,20 +55,21 @@ export function TradeReviewPanel({trade,history,onSelect,close}:Props) {
           {history.map(h=><option key={h.id} value={String(h.id)}>{h.pair||`${h.symbol}USDT`} · {h.side} · {h.closed}</option>)}
         </select>
       </label>
-      <div className="ai-facts-grid">
-        {(result?['margin','leverage','grossPnl','totalFees','netPnl','outcome'].map(id=>({label:evidence.get(id)?.label||({grossPnl:'Gross PnL',totalFees:'Total fees',netPnl:'Net PnL'} as Record<string,string>)[id]||id,value:evidence.get(id)?.value||'Not available'})):[
+      {result && <><TradeResultVisual facts={result.facts} liquidated={trade.reason === "Liquidation"}/><Takeaway title="Gemini / the key takeaway"><p>{result.review.summary}</p></Takeaway></>}
+      {!result && <div className="ai-facts-grid">
+        {[
           {label:'Entry price',value:`$${trade.entry.toLocaleString()}`},
           {label:'Recorded exit',value:trade.exit?`$${trade.exit.toLocaleString()}`:'Not available'},
           {label:'Margin',value:`$${trade.margin.toFixed(2)}`},{label:'Leverage',value:`${trade.lev}×`},
-        ]).map(f=><div key={f.label}><span>{f.label}</span><b>{f.value}</b></div>)}
-      </div>
+        ].map(f=><div key={f.label}><span>{f.label}</span><b>{f.value}</b></div>)}
+      </div>}
       {state.status==='loading'&&<div className="ai-review-loading" role="status" aria-live="polite"><i aria-hidden="true"/><b>Reviewing your trade</b><p>Checking the result, fees and leverage. You can keep using PaperForge while this loads.</p><div className="ai-skeleton" aria-hidden="true"/><div className="ai-skeleton short" aria-hidden="true"/></div>}
       {state.status==='error'&&<div className="ai-review-error" role="alert"><b>Review unavailable</b><p>{state.message}</p><button className="primary" onClick={()=>{setState({status:'loading'});setAttempt(value=>value+1);}}>Try again</button><small>No AI feedback was generated for this request.</small></div>}
       {result&&<div className="ai-review-content" aria-live="polite">
-        <section><h3>The outcome</h3><p>{result.review.summary}</p></section>
-        <section><h3>What the facts show</h3>{result.review.observations.map((observation,index)=><article className="ai-observation" key={index}><h4>{observation.title}</h4><p>{observation.text}</p><div className="ai-evidence" aria-label="Supporting calculated facts">{observation.evidenceIds.map(id=>{const fact=evidence.get(id);return fact?<span key={id}>{fact.label}: <b>{fact.value}</b></span>:null;})}</div></article>)}</section>
-        <section className="ai-lesson"><span className="ai-eyebrow">TAKEAWAY</span><h3>One lesson to keep</h3><p>{result.review.lesson}</p></section>
-        <section className="ai-exercise"><span className="ai-eyebrow">YOUR NEXT PRACTICE</span><h3>{result.review.exercise.title}</h3><ol>{result.review.exercise.steps.map((step,index)=><li key={index}>{step}</li>)}</ol></section>
+
+        <section><h3>What the facts show / Gemini</h3>{result.review.observations.map((observation,index)=><article className="ai-observation" key={index}><h4>{observation.title}</h4><p>{observation.text}</p><div className="ai-evidence" aria-label="Supporting calculated facts">{observation.evidenceIds.map(id=>{const fact=evidence.get(id);return fact?<span key={id}>{fact.label}: <b>{fact.value}</b></span>:null;})}</div></article>)}</section>
+        <section className="ai-lesson"><span className="ai-eyebrow">TAKEAWAY</span><h3><InsightIcon kind="lesson"/>One lesson to keep</h3><p>{result.review.lesson}</p></section>
+        <section className="ai-exercise"><span className="ai-eyebrow">YOUR NEXT PRACTICE</span><h3><InsightIcon kind="practice"/>{result.review.exercise.title}</h3><ol>{result.review.exercise.steps.map((step,index)=><li key={index}>{step}</li>)}</ol></section>
         <details className="ai-data-details"><summary>All calculated facts and data limitations</summary><dl>{result.facts.facts.map(f=><div key={f.id}><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl><ul>{result.facts.limitations.map((note,index)=><li key={index}>{note}</li>)}</ul></details>
         <p className="ai-review-timing">{result.metadata.cached?'Saved review':'New review'} · Generated in {(result.metadata.generationMs/1000).toFixed(1)}s</p>
       </div>}

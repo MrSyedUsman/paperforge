@@ -1,3 +1,4 @@
+import { captureAiPanel } from "./capture-ai-panel.mjs";
 // Isolated browser verification with synthetic market prices. No real account or Gemini calls.
 import { pairs, simulateArena, quote } from "../tests/bot-fixtures.mjs";
 import {
@@ -350,11 +351,11 @@ try {
   );
   assert.ok(await evaluate(`!!document.querySelector('.ai-review-loading')`));
   await click(".arena-debrief-button");
-  assert.equal(generationCalls, 1, "duplicate clicks coalesce");
   await wait(
     `!!document.querySelector('.arena-debrief-mission')`,
     "grounded generated report",
   );
+  assert.equal(generationCalls, 1, "duplicate clicks coalesce");
   assert.ok(
     await evaluate(
       `document.querySelector('.arena-debrief-trade').textContent.includes('BTCUSDT')`,
@@ -371,6 +372,7 @@ try {
     await evaluate(`document.activeElement.matches('button')`),
     "keyboard can reach controls",
   );
+  await captureAiPanel(call, ".arena-debrief-body", "debrief-desktop");
   await call("Page.captureScreenshot", { format: "png" }).then((r) =>
     fs.writeFileSync(
       path.join(os.tmpdir(), "paperforge-arena-debrief-desktop.png"),
@@ -437,6 +439,8 @@ try {
       ),
     );
   }
+  await call("Emulation.setDeviceMetricsOverride", {width:390,height:844,deviceScaleFactor:1,mobile:true});
+  await captureAiPanel(call, ".arena-debrief-body", "debrief-mobile");
   await call("Page.captureScreenshot", { format: "png" }).then((r) =>
     fs.writeFileSync(
       path.join(os.tmpdir(), "paperforge-arena-debrief-mobile.png"),
