@@ -1,5 +1,6 @@
 "use client";
 import { useState, type FormEvent, type ReactNode } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import { useAuth } from "./auth-provider";
 import type { ApiUser } from "./api-client";
 
@@ -25,7 +26,7 @@ export function AuthGate({ children }: { children: (user: ApiUser) => ReactNode 
   return (
     <main className="auth-screen">
       <form className="auth-card" onSubmit={submit}>
-        <div className="logo"><i>P</i>Paper<span>Forge</span></div>
+        <div className="logo"><BrandMark />Paper<span>Forge</span></div>
         <h1>Sign in</h1>
         <label>
           <span>Username</span>

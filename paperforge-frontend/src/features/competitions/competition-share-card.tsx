@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
+import { brandLogo, drawBrandLogo } from "@/lib/brand-logo";
 import { money } from "./constants";
 import { finite, competitionCardMetrics } from "./engine";
+
+// Start loading the logo now so it is ready when a card is painted.
+void brandLogo();
 export function CompetitionShareCard({ user, lobby, quotes }: any) {
   const [imageUrl, setImageUrl] = useState(""),
     [message, setMessage] = useState("");
@@ -64,12 +69,14 @@ export function CompetitionShareCard({ user, lobby, quotes }: any) {
     glow.addColorStop(1, "rgba(55,212,154,0)");
     ctx.fillStyle = glow;
     ctx.fillRect(600, 0, 600, 520);
-    ctx.fillStyle = "#39d8a0";
-    rounded(ctx, 58, 48, 58, 58, 15);
-    ctx.fill();
-    ctx.fillStyle = "#06130f";
-    ctx.font = "800 34px Arial";
-    ctx.fillText("P", 76, 88);
+    if (!drawBrandLogo(ctx, 58, 48, 58, 15)) {
+      ctx.fillStyle = "#39d8a0";
+      rounded(ctx, 58, 48, 58, 58, 15);
+      ctx.fill();
+      ctx.fillStyle = "#06130f";
+      ctx.font = "800 34px Arial";
+      ctx.fillText("P", 76, 88);
+    }
     ctx.fillStyle = "#f2f7fa";
     ctx.font = "700 30px Arial";
     ctx.fillText("Paper", 136, 86);
@@ -364,7 +371,7 @@ export function CompetitionShareCard({ user, lobby, quotes }: any) {
         aria-label="Competition result card preview"
       >
         <div className="bc-share-brand">
-          <i>P</i>
+          <BrandMark />
           <b>
             Paper<em>Forge</em>
           </b>
