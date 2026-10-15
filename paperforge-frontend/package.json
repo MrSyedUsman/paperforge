@@ -11,9 +11,10 @@
     "build": "next build && node scripts/prepare-standalone.mjs",
     "start": "node scripts/start-standalone.mjs",
     "test": "npm run build && node --experimental-strip-types --test tests/*.test.mjs",
-    "test:unit": "node --experimental-strip-types --test tests/liquidation.test.mjs tests/account.test.mjs tests/competition.test.mjs",
+    "test:unit": "node --experimental-strip-types --test tests/liquidation.test.mjs tests/account.test.mjs tests/competition.test.mjs tests/bot-strategies.test.mjs",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src tests scripts next.config.ts"
+    "lint": "eslint src tests scripts next.config.ts",
+    "evaluate:bots": "node --experimental-strip-types scripts/evaluate-bots.mjs"
   },
   "dependencies": {
     "next": "16.2.6",

@@ -1,3 +1,4 @@
+import type { BotEntry, BotState, PriceHistory, BotDecisionRecord } from './bot-types.ts';
 export type Difficulty = "Easy" | "Medium" | "Hard" | "Expert";
 export type Status = "active" | "finished" | "eliminated";
 export type Settings = {
@@ -16,6 +17,7 @@ export type Settings = {
   elimination: boolean;
 };
 export type Position = {
+  botEntry?: BotEntry;
   id: number;
   pair: string;
   side: "Long" | "Short";
@@ -30,6 +32,7 @@ export type Position = {
   opened: number;
 };
 export type Trade = Position & {
+  botExit?: BotDecisionRecord;
   exit: number;
   pnl: number;
   fee: number;
@@ -39,6 +42,7 @@ export type Trade = Position & {
   liquidationFee?: number;
 };
 export type Player = {
+  botState?: BotState;
   id: string;
   name: string;
   isUser: boolean;
@@ -61,6 +65,8 @@ export type Event = {
   tone?: "up" | "down" | "info";
 };
 export type Lobby = {
+  completionReason?: "time" | "elimination" | "abandonment";
+  botHistory?: PriceHistory;
   version: number;
   feeAccounting?: number;
   status: "active" | "finished";

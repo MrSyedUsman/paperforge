@@ -5,6 +5,7 @@ import type { Player, Trade } from "./types";
 import { money, resultLabel } from "./constants";
 import { equityFor, eligibilityFor } from "./engine";
 import { CompetitionShareCard } from "./competition-share-card";
+import { ArenaDebrief } from "./arena-debrief";
 import { Standings } from "./standings";
 export function Results({ lobby, quotes, rematch, create, portfolio }: any) {
   const [cardPlayerId, setCardPlayerId] = useState<string | null>(null);
@@ -114,6 +115,7 @@ export function Results({ lobby, quotes, rematch, create, portfolio }: any) {
           </div>
         )}
         <div className="bc-results-actions">
+          <ArenaDebrief key={`${lobby.start}:${lobby.end}`} lobby={lobby}/>
           <button className="primary" onClick={rematch}>
             Rematch same settings
           </button>

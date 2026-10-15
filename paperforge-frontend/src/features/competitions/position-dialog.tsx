@@ -6,6 +6,7 @@ import { pricesFor } from "./engine";
 import { grossPnl } from "@/lib/simulation/trading";
 export function PositionDialog({ player, quotes, visible, close }: any) {
   if (!player) return null;
+  const latest = player.botState?.decisions?.at(-1);
   return (
     <div
       className="bc-backdrop"
@@ -24,6 +25,7 @@ export function PositionDialog({ player, quotes, visible, close }: any) {
           {player.strategy} · {player.positions.length} open ·{" "}
           {player.trades.length} closed
         </p>
+        {!player.isUser && visible && latest && <section className="bc-bot-reason" aria-label="Latest bot strategy decision"><b>Latest strategy check</b><p>{latest.reason}</p><small>{latest.adjustment}</small><small>Indicators use sampled prices, not candle patterns.</small></section>}
         {visible ? (
           <div>
             {player.positions.length ? (
@@ -41,6 +43,7 @@ export function PositionDialog({ player, quotes, visible, close }: any) {
                     <span>
                       Entry {money(p.entry)} · Mark {money(mark)}
                     </span>
+                    {p.botEntry && <span>Entry reason: {p.botEntry.reason}</span>}
                     <strong className={gain >= 0 ? "up" : "down"}>
                       {money(gain)} · {((gain / p.margin) * 100).toFixed(2)}%
                       ROI

@@ -1,0 +1,300 @@
+/* Shared, scoped typography and layout for the four optional AI reports. */
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+  --ai-copy: 1rem;
+  --ai-meta: 0.8125rem;
+  --ai-label: 0.75rem;
+  --ai-value: 1.0625rem;
+  font-size: var(--ai-copy);
+  line-height: 1.6;
+  box-sizing: border-box;
+  container-type: inline-size;
+  color: #dcece4;
+  user-select: text;
+  max-width: calc(100vw - 16px);
+}
+/* These small entry-point labels also use the same type scale. */
+:is(
+  .p3-ai-review-button,
+  .trade-risk-action,
+  .arena-debrief-button,
+  .arena-radar-trigger
+) {
+  --ai-copy: 1rem;
+  --ai-meta: 0.8125rem;
+  --ai-label: 0.75rem;
+  --ai-value: 1.0625rem;
+  font-size: 0.875rem;
+}
+.ai-review-panel {
+  width: min(560px, calc(100vw - 32px));
+}
+.arena-radar-panel {
+  width: min(600px, calc(100vw - 32px));
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel)
+  :is(button, select) {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  min-height: 44px;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel)
+  .ai-review-close {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  font-size: 24px;
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel)
+  button:disabled {
+  opacity: 1;
+  color: #bfd0c7;
+  background: #233a32;
+  border-color: #52695e;
+  cursor: not-allowed;
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel)
+  :is(button, select, summary):focus-visible {
+  outline: 2px solid #69e3b6;
+  outline-offset: 3px;
+}
+:is(.ai-review-heading, .arena-debrief-heading, .arena-radar-panel > header) {
+  flex-shrink: 0;
+  min-width: 0;
+  align-items: flex-start;
+  padding: 18px 20px;
+}
+:is(.ai-review-heading, .arena-debrief-heading, .arena-radar-panel > header)
+  > div {
+  min-width: 0;
+}
+:is(.ai-review-heading, .arena-debrief-heading, .arena-radar-panel > header)
+  h2 {
+  font-size: 1.5rem;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  margin: 6px 0;
+}
+:is(.ai-eyebrow, .arena-debrief-step) {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+:is(.ai-review-body, .arena-debrief-body, .arena-radar-body) {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+  padding: 20px;
+  scrollbar-gutter: stable;
+}
+:is(.ai-review-body, .arena-debrief-body, .arena-radar-body) :is(p, li) {
+  line-height: 1.65;
+}
+:is(
+  .ai-review-content h3,
+  .trade-risk-section-title,
+  .trade-risk-scenarios h3,
+  .arena-debrief-body h3,
+  .arena-radar-body h3
+) {
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel)
+  :is(small, dt, dd, summary) {
+  overflow-wrap: anywhere;
+}
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) :is(summary) {
+  min-height: 44px;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+:is(.ai-review-footer, .arena-debrief-footer, .arena-radar-panel > footer) {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  font-size: var(--ai-label);
+  line-height: 1.5;
+  color: #a9bfb3;
+}
+:is(.ai-evidence, .arena-debrief-evidence, .radar-evidence) {
+  gap: 8px;
+}
+:is(.ai-evidence, .arena-debrief-evidence, .radar-evidence) > span {
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.6;
+  padding: 8px 10px;
+}
+:is(.arena-debrief-evidence small, .radar-evidence small) {
+  color: #a8c4b3;
+}
+.ai-review-panel .ai-review-error small {
+  color: #d7c3af;
+}
+.ai-review-content :is(p, li),
+.arena-debrief-body > section > p,
+.arena-radar-body > section > p {
+  font-size: var(--ai-copy);
+}
+.arena-debrief-panel .arena-debrief-selection,
+.arena-debrief-panel .arena-debrief-recorded {
+  font-size: var(--ai-meta) !important;
+}
+.arena-radar-panel .radar-snapshot p {
+  font-size: var(--ai-meta);
+}
+.trade-risk-panel .trade-risk-scenarios article p {
+  font-size: var(--ai-copy);
+}
+.trade-risk-panel .trade-risk-scenarios article small {
+  font-size: var(--ai-meta);
+}
+.trade-risk-panel .ai-review-footer {
+  padding: 10px 20px;
+}
+:is(
+  .ai-facts-grid,
+  .radar-metrics,
+  .arena-debrief-kpis,
+  .arena-debrief-scoreboard dl,
+  .trade-risk-scenarios dl,
+  .arena-debrief-trade-numbers
+) {
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+}
+:is(
+    .ai-facts-grid,
+    .radar-metrics,
+    .arena-debrief-kpis,
+    .arena-debrief-scoreboard dl,
+    .trade-risk-scenarios dl,
+    .arena-debrief-trade-numbers
+  )
+  > div {
+  min-width: 0;
+}
+:is(
+  .ai-facts-grid b,
+  .radar-metrics b,
+  .arena-debrief-kpis b,
+  .arena-debrief-trade-numbers b,
+  .arena-debrief-scoreboard dd,
+  .trade-risk-scenarios dd
+) {
+  font-size: var(--ai-value);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+:is(.ai-data-details, .arena-debrief-limitations) dl > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+}
+.ai-trade-switch select {
+  font-size: 1rem;
+  min-height: 44px;
+}
+/* A narrow desktop risk report used to collapse to 329px at tablet widths. */
+@media (min-width: 761px) and (max-width: 1023px) {
+  .ai-review-panel.trade-risk-panel {
+    left: 12px;
+    right: auto;
+    width: min(560px, calc(100vw - 24px));
+  }
+}
+@media (max-width: 760px) {
+  :is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    top: auto;
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    height: min(80dvh, 900px);
+    max-height: calc(100dvh - 150px);
+  }
+  :is(.ai-review-heading, .arena-debrief-heading, .arena-radar-panel > header) {
+    padding: 14px;
+  }
+  :is(.ai-review-body, .arena-debrief-body, .arena-radar-body) {
+    padding: 14px;
+  }
+  :is(.ai-review-footer, .arena-debrief-footer, .arena-radar-panel > footer) {
+    padding: 9px 14px;
+  }
+  :is(.ai-data-details, .arena-debrief-limitations) dl > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  :is(.ai-data-details, .arena-debrief-limitations) dd {
+    text-align: left;
+  }
+  .arena-debrief-scoreboard article > div {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 380px) {
+  :is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+    bottom: calc(120px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 175px);
+  }
+}
+/* Keep header/close controls available in landscape and zoomed short windows. */
+@media (max-height: 600px) {
+  :is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+    top: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    height: auto;
+    max-height: calc(100dvh - 16px);
+  }
+  :is(.ai-review-heading, .arena-debrief-heading, .arena-radar-panel > header) {
+    padding: 10px 14px;
+  }
+  :is(.ai-review-footer, .arena-debrief-footer, .arena-radar-panel > footer) {
+    padding: 8px 14px;
+  }
+}
+@media (max-height: 600px) and (max-width: 760px) {
+  :is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+    bottom: calc(78px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 86px);
+  }
+}
+@media (max-height: 600px) and (max-width: 380px) {
+  :is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) {
+    bottom: calc(120px + env(safe-area-inset-bottom));
+    max-height: calc(100dvh - 128px);
+  }
+}
+
+:is(.ai-review-footer, .arena-debrief-footer, .arena-radar-panel > footer) {
+  height: auto;
+  min-height: 0;
+  display: block;
+  margin: 0;
+}
+
+:is(.ai-review-panel, .arena-debrief-panel, .arena-radar-panel) small {
+  font-size: var(--ai-label);
+}
+.ai-trade-context b {
+  overflow-wrap: anywhere;
+}
+
+:is(.p3-ai-review-button, .arena-radar-trigger) {
+  min-height: 44px;
+}
+:is(
+  .trade-risk-action button,
+  .p3-ai-review-button,
+  .arena-debrief-button
+):disabled {
+  opacity: 1;
+  background: #233a32;
+  color: #bfd0c7;
+  border-color: #52695e;
+  cursor: not-allowed;
+}
