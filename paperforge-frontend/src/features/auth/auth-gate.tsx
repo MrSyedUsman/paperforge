@@ -4,10 +4,14 @@ import { BrandMark } from "@/components/brand-mark";
 import { useAuth } from "./auth-provider";
 import type { ApiUser } from "./api-client";
 
+// Demo account: shown prefilled and locked on the sign-in screen so the app can be opened with one click.
+const DEMO_USERNAME = "forge";
+const DEMO_PASSWORD = "Forge@2026";
+
 export function AuthGate({ children }: { children: (user: ApiUser) => ReactNode }) {
   const { user, loading, login } = useAuth();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username] = useState(DEMO_USERNAME);
+  const [password] = useState(DEMO_PASSWORD);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -30,11 +34,11 @@ export function AuthGate({ children }: { children: (user: ApiUser) => ReactNode 
         <h1>Sign in</h1>
         <label>
           <span>Username</span>
-          <input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" autoFocus required />
+          <input value={username} readOnly disabled autoComplete="username" required />
         </label>
         <label>
           <span>Password</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required />
+          <input type="password" value={password} readOnly disabled autoComplete="current-password" required />
         </label>
         {error && <p className="auth-error" role="alert">{error}</p>}
         <button className="primary" type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</button>
