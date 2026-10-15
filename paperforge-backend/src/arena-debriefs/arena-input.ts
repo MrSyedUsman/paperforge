@@ -1,5 +1,9 @@
 import { BadRequestException } from '@nestjs/common';
-import { BOT_CATALOG, BOT_REASON_CODES } from '@paperforge/simulation/bots';
+import {
+  BOT_CATALOG,
+  BOT_REASON_CODES,
+  BOT_REASON_KINDS,
+} from '@paperforge/simulation/bots';
 export const ARENA_MAX_BYTES = 700_000;
 export type ArenaTrade = {
   id: number;
@@ -451,21 +455,7 @@ export function validateArenaSnapshot(
         !Object.hasOwn(BOT_REASON_CODES, v.reasonCode)
       )
         return invalid('Unknown recorded bot decision.');
-      const allowedReasons: Record<string, string[]> = {
-        trend: ['trend_pullback', 'trend_confirmed'],
-        momentum: ['momentum_confirmed'],
-        breakout: ['breakout_confirmed'],
-        reversion: ['reversion_confirmed'],
-        conservative: ['conservative_confirmed'],
-        volatility: ['volatility_confirmed'],
-        adaptive: [
-          'trend_pullback',
-          'trend_confirmed',
-          'breakout_confirmed',
-          'reversion_confirmed',
-        ],
-      };
-      if (!allowedReasons[bot.kind].includes(v.reasonCode))
+      if (!BOT_REASON_KINDS[v.reasonCode]?.includes(bot.kind))
         return invalid(
           'Entry reason does not match the configured bot strategy.',
         );
@@ -475,6 +465,9 @@ export function validateArenaSnapshot(
       const signals = object(
         v.signals,
         [
+          'sampleCount',
+          'provisional',
+          'entryQuality',
           'fastAverage',
           'slowAverage',
           'trendPercent',

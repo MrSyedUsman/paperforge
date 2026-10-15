@@ -1,7 +1,8 @@
 const descriptions = {
   trend: {
-    speciality: "Follow the established move",
-    looksFor: "Aligned fast and slow averages; favours a recovering pullback.",
+    speciality: "Follow established and developing trends",
+    looksFor:
+      "Prefers aligned trends and pullbacks; accepts a smaller developing directional setup.",
     exits:
       "The trend weakens, profit retreats, or a risk or holding limit is reached.",
     risk: "Moderate exposure, with a cooldown after exits.",
@@ -10,25 +11,25 @@ const descriptions = {
   momentum: {
     speciality: "Catch recent directional strength",
     looksFor:
-      "Recent returns agree with broader momentum without excessive extension.",
+      "Prefers strong recent momentum; also considers modest directional continuation.",
     exits:
       "Momentum fades or reverses, a net-profit target is reached, or risk limits intervene.",
     risk: "Moderate exposure; can hold more positions than selective bots.",
     accent: "#83bdf3",
   },
   breakout: {
-    speciality: "Wait for a confirmed range break",
+    speciality: "Explore developing and confirmed range breaks",
     looksFor:
-      "Two sampled prices confirm a buffered move beyond the previous range.",
+      "Prefers confirmed range breaks; can enter smaller near-boundary directional moves before confirmation.",
     exits:
       "Price returns inside the range, profit retreats, or a risk or holding limit is reached.",
-    risk: "Selective entries and cooldowns after exits.",
+    risk: "Smaller anticipatory entries, with cooldowns and re-entry checks.",
     accent: "#e2bd7d",
   },
   reversion: {
     speciality: "Look for a return toward the mean",
     looksFor:
-      "An extended price deviation starts recovering while the reference mean has a weak slope.",
+      "Looks for recovery toward a recent mean, including smaller deviations with reduced exposure.",
     exits:
       "Price reaches the entry mean after fees, or deviation, trend or risk invalidates the entry.",
     risk: "Restrained leverage; waits for a measured reversal.",
@@ -37,7 +38,7 @@ const descriptions = {
   conservative: {
     speciality: "Stay selective and limit exposure",
     looksFor:
-      "Stronger trend and momentum agreement, low volatility and room beyond fees.",
+      "Accepts basic directional agreement while keeping leverage, exposure and concurrent positions low.",
     exits:
       "A modest net-profit target, weakening trend or risk limit calls for an exit.",
     risk: "Lowest base exposure, one position, and smaller sizing after drawdown.",
@@ -46,16 +47,16 @@ const descriptions = {
   adaptive: {
     speciality: "Match the rules to the market",
     looksFor:
-      "A persistent trend, range or breakout regime before selecting its rule set.",
+      "Prefers a persistent regime; can make a smaller provisional trend or recovery entry while it develops.",
     exits:
       "Original entry rules fail, a confirmed regime changes, or risk limits intervene.",
-    risk: "Waits when conditions are unclear; avoids rapid strategy switching.",
+    risk: "Uses reduced exposure for provisional evidence and confirms regimes before larger commitments.",
     accent: "#83d5de",
   },
   volatility: {
     speciality: "Respond to expanding volatility",
     looksFor:
-      "Realized volatility expands and a separate signal confirms direction.",
+      "Prefers expanding volatility; can explore moderate measured variation with directional support.",
     exits:
       "Expansion or direction fades, a net-profit target is reached, or risk limits intervene.",
     risk: "Reduces sizing and leverage as volatility rises; avoids extreme volatility.",
@@ -113,3 +114,46 @@ export const BOT_REASON_CODES = {
   volatility_confirmed:
     "Realized volatility expanded with independent directional confirmation",
 };
+
+BOT_REASON_CODES.trend_developing =
+  "A developing observed trend supports a smaller trend-following entry";
+BOT_REASON_CODES.trend_exploratory =
+  "Small exploratory entry: a developing observed trend supports a smaller trend-following entry";
+BOT_REASON_CODES.momentum_developing =
+  "Modest recent directional continuation supports a smaller momentum entry";
+BOT_REASON_CODES.momentum_exploratory =
+  "Small exploratory entry: modest recent directional continuation supports a smaller momentum entry";
+BOT_REASON_CODES.breakout_developing =
+  "Directional movement near a recent boundary supports an anticipatory range entry";
+BOT_REASON_CODES.breakout_exploratory =
+  "Small exploratory entry: directional movement near a recent boundary supports an anticipatory range entry";
+BOT_REASON_CODES.reversion_developing =
+  "A smaller observed deviation is recovering toward the recent reference mean";
+BOT_REASON_CODES.reversion_exploratory =
+  "Small exploratory entry: a smaller observed deviation is recovering toward the recent reference mean";
+BOT_REASON_CODES.conservative_developing =
+  "Basic directional agreement supports a lower-exposure conservative entry";
+BOT_REASON_CODES.conservative_exploratory =
+  "Small exploratory entry: basic directional agreement supports a lower-exposure conservative entry";
+BOT_REASON_CODES.adaptive_developing =
+  "Available trend or recovery evidence supports a provisional adaptive entry";
+BOT_REASON_CODES.adaptive_exploratory =
+  "Small exploratory entry: available trend or recovery evidence supports a provisional adaptive entry";
+BOT_REASON_CODES.volatility_developing =
+  "Moderate measured price variation has directional support";
+BOT_REASON_CODES.volatility_exploratory =
+  "Small exploratory entry: moderate measured price variation has directional support";
+
+/** Used by evidence validation; historical reason identifiers remain accepted. */
+export const BOT_REASON_KINDS = Object.fromEntries(
+  Object.keys(BOT_REASON_CODES).map((code) => [
+    code,
+    code.startsWith("trend_")
+      ? ["trend", "adaptive"]
+      : code.startsWith("breakout_")
+        ? ["breakout", "adaptive"]
+        : code.startsWith("reversion_")
+          ? ["reversion", "adaptive"]
+          : [code.split("_")[0]],
+  ]),
+);

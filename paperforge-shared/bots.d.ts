@@ -20,3 +20,5 @@ export type BotDescription = {
 export const BOT_CATALOG: BotDescription[];
 
 export const BOT_REASON_CODES: Record<string, string>;
+
+export const BOT_REASON_KINDS: Record<string, SharedBotKind[]>;

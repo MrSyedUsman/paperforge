@@ -1,4 +1,6 @@
-# Synthetic bot eligibility results
+# Historical strict-bot eligibility results
+
+This archived measurement predates graded activity. See [current activity comparison](bot-activity-results.md) for the revised implementation.
 
 Constructed-scenario measurements, not predictions of live-market success. Each cell shows eligible arenas out of eighteen and the rounded percentage. Six paths (trend, range, breakout, reversal, volatility expansion and flat) are each evaluated with three seeds. Flat arenas intentionally remain ineligible.
 

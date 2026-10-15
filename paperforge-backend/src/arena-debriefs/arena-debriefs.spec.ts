@@ -1,3 +1,8 @@
+import {
+  BOT_CATALOG,
+  BOT_REASON_CODES,
+  BOT_REASON_KINDS,
+} from '@paperforge/simulation/bots';
 import { ConfigService } from '@nestjs/config';
 import { HttpException, type INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
@@ -420,6 +425,39 @@ it.each(['__proto__', 'toString', 'reversion_confirmed'])(
     expect(() => calculateArenaFacts(s)).toThrow();
   },
 );
+describe('graded bot entry evidence compatibility', () => {
+  it.each(
+    BOT_CATALOG.flatMap((bot, index) =>
+      ['developing', 'exploratory'].map((quality) => ({ bot, index, quality })),
+    ),
+  )(
+    'accepts $bot.name $quality reason metadata without changing accounting',
+    ({ bot, index, quality }) => {
+      const s = fixture();
+      s.players[1].id = `bot-${index}`;
+      s.players[1].botName = bot.name;
+      add(s, 1);
+      const reasonCode = `${bot.kind}_${quality}`;
+      s.players[1].decision = {
+        tradeId: 1,
+        version: 1,
+        kind: bot.kind,
+        regime: bot.kind === 'reversion' ? 'range' : 'trend',
+        at: s.start + 1000,
+        reasonCode,
+        signals: {
+          sampleCount: 5,
+          provisional: 1,
+          entryQuality: quality === 'developing' ? 1 : 2,
+        },
+      };
+      const f = calculateArenaFacts(s).facts;
+      expect(f.mirror?.recordedReason).toBe(BOT_REASON_CODES[reasonCode]);
+      expect(BOT_REASON_KINDS[reasonCode]).toContain(bot.kind);
+      expect(f.participants.find((p) => !p.isUser)?.tradingNet).toBe(9);
+    },
+  );
+});
 describe('arena structured explanation', () => {
   it('accepts grounded sections and limits prompt contents', () => {
     const s = add(fixture());
