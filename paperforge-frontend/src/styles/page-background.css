@@ -1,0 +1,25 @@
+/* One static paint surface behind the app. No elements, hit targets or stacking contexts.
+   The auth screen does not render #main-content and keeps its existing styling. */
+#main-content {
+  --page-grid-ink: rgb(110 194 174 / 0.055);
+  background-color: var(--surface-0, #070d13);
+  background-image:
+    linear-gradient(180deg, transparent, rgb(7 13 19 / 0.65) 1100px),
+    linear-gradient(90deg, transparent, rgb(7 13 19 / 0.68) 32%, rgb(7 13 19 / 0.68) 68%, transparent),
+    radial-gradient(ellipse 62% 760px at 100% 80px, rgb(38 159 128 / 0.16), transparent 75%),
+    radial-gradient(ellipse 48% 680px at 0% 540px, rgb(28 116 133 / 0.13), transparent 75%),
+    linear-gradient(var(--page-grid-ink) 1px, transparent 1px),
+    linear-gradient(90deg, var(--page-grid-ink) 1px, transparent 1px);
+  background-size: auto, auto, auto, auto, 56px 56px, 56px 56px;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat, repeat;
+}
+/* Keep the visual identity without a dense grid on small screens. */
+@media (max-width: 760px) {
+  #main-content {
+    --page-grid-ink: rgb(110 194 174 / 0.035);
+    background-size: auto, auto, auto, auto, 72px 72px, 72px 72px;
+  }
+}
+@media (forced-colors: active), print {
+  #main-content { background-image: none; }
+}
