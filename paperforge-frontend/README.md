@@ -10,8 +10,11 @@ and compete against simulated opponents. No real-money orders are placed.
 - Long and Short paper market orders with leverage, fees, and isolated liquidation.
 - Interactive price charts with multiple styles and time ranges.
 - Portfolio, trade history, activity, and downloadable trade cards.
+- Optional pre-trade risk checks with calculated scenarios and concise Gemini explanations.
 - On-demand Gemini reviews of completed normal trades, with evidence, a lesson, and a practice exercise.
-- Timed bot competitions with separate wallets, standings, and result cards.
+- Timed competitions against seven distinct rule-based bot strategies, with eligibility-aware pacing, decision explanations, separate wallets, standings, and result cards.
+- Optional [Arena Radar](docs/arena-radar.md) explains active competition snapshots, with explicit refresh and a generation cooldown.
+- On-demand [Arena Debrief](docs/arena-debrief.md) for completed competitions, with calculated evidence, bot comparisons, and a next-arena mission.
 - Browser-local profiles and leaderboards with sample benchmark participants.
 - Virtual starting balance of $1,000 and a $50 faucet every six hours.
 
@@ -104,3 +107,7 @@ Browser-local trade records remain unverified. Funding, slippage, intentions,
 and market history are not inferred. Missing exit prices or opening fees are
 acknowledged. Competition AI, pre-trade coaching, and automatic trading are not
 included. See [AI review architecture](docs/ai-trade-review.md).
+
+See [Pre-trade risk checks](docs/ai-trade-risk.md) for behaviour, limits and verification.
+
+See [Competition bot strategies](docs/bot-strategies.md) for rules, participation planning and reproducible evaluation.

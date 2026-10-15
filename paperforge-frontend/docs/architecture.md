@@ -112,3 +112,11 @@ server. The automated test suite does not depend on Binance availability.
 - The competition "All eligible" setting currently selects major markets.
 - The chart's "EMA 20" label currently represents a rolling simple average.
 - Live data depends on Binance connectivity; local results are unverified.
+
+Optional pre-trade checks share the backend AI allowance and simulator formulas; see [Pre-trade risk checks](ai-trade-risk.md).
+
+Competition opponents now use sampled-price histories and distinct rule-based strategy modules; see [Competition bot strategies](bot-strategies.md).
+
+## Arena Debrief
+
+The competition results panel requests a bounded completed snapshot through authenticated NestJS facts and debrief endpoints. Bot identity and guide descriptions are centralized in `paperforge-shared/bots`; eligibility and ranking primitives are shared with the simulation engine. Calculated evidence is displayed independently from validated Gemini prose. See [Arena Debrief](arena-debrief.md) for accounting, deterministic selection, process-local limits and verification.

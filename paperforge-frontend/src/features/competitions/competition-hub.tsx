@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { money } from "./constants";
-export function CompetitionHub({ stats, create, resume }: any) {
+export function CompetitionHub({ stats, create, resume, meetBots }: any) {
   return (
     <div className="bc page">
       <section className="bc-hero">
@@ -21,6 +21,7 @@ export function CompetitionHub({ stats, create, resume }: any) {
             <button className="primary" onClick={create}>
               Start Bot Practice →
             </button>
+            <button type="button" className="bot-guide-button" aria-haspopup="dialog" onClick={meetBots}>Meet the bots</button>
             {resume && (
               <button className="secondary" onClick={resume}>
                 Resume saved lobby

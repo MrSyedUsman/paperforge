@@ -1,3 +1,5 @@
+import { competitionEligibility, compareCompetitionScores } from '@paperforge/simulation';
+import { trimBotTradeMetadata } from './bot-state.ts';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Quote } from "@/lib/market-data/markets";
 import type { Position, Player, Settings, Trade, Lobby } from "./types";
@@ -59,12 +61,12 @@ export function tradedMarginFor(player: Player) {
 export function eligibilityFor(player: Player, allocation: number) {
   const opened = (player.positions?.length || 0) + (player.trades?.length || 0),
     used = tradedMarginFor(player),
-    required = roundMoney(allocation * 0.5);
+    required = competitionEligibility(opened, used, allocation).required;
   return {
     opened,
     used,
     required,
-    eligible: opened >= 1 && used >= required,
+    eligible: competitionEligibility(opened, used, allocation).eligible,
     reason:
       opened < 1
         ? "No trade was opened."
@@ -75,10 +77,7 @@ export function rankPlayers(players: Player[], quotes: Record<string, Quote>) {
   return [...players]
     .sort(
       (a, b) =>
-        equityFor(b, quotes) - equityFor(a, quotes) ||
-        b.realized - a.realized ||
-        a.fees - b.fees ||
-        a.achieved - b.achieved,
+        compareCompetitionScores({equity:equityFor(a,quotes),realized:a.realized,fees:a.fees,achieved:a.achieved},{equity:equityFor(b,quotes),realized:b.realized,fees:b.fees,achieved:b.achieved}),
     )
     .map((p, i) => ({ ...p, previousRank: p.rank, rank: i + 1 }));
 }
@@ -92,10 +91,7 @@ export function rankFinalPlayers(
       (a, b) =>
         Number(eligibilityFor(b, allocation).eligible) -
           Number(eligibilityFor(a, allocation).eligible) ||
-        equityFor(b, quotes) - equityFor(a, quotes) ||
-        b.realized - a.realized ||
-        a.fees - b.fees ||
-        a.achieved - b.achieved,
+        compareCompetitionScores({equity:equityFor(a,quotes),realized:a.realized,fees:a.fees,achieved:a.achieved},{equity:equityFor(b,quotes),realized:b.realized,fees:b.fees,achieved:b.achieved}),
     )
     .map((p, i) => ({ ...p, previousRank: p.rank, rank: i + 1 }));
 }
@@ -175,6 +171,7 @@ export function closePosition(
   pos: Position,
   reason = "Closed",
   mark: number = pos.entry,
+  now: number = Date.now(),
 ) {
   const gross = grossPnl(pos.size, pos.entry, mark, pos.side),
     fee = tradingFee(pos.size),
@@ -185,7 +182,7 @@ export function closePosition(
       exit: mark,
       pnl: net,
       fee,
-      closed: Date.now(),
+      closed: now,
       reason,
     };
   return {
@@ -194,11 +191,11 @@ export function closePosition(
     realized: roundMoney(player.realized + net),
     fees: roundMoney(player.fees + fee),
     positions: player.positions.filter((p) => p.id !== pos.id),
-    trades: [trade, ...player.trades],
-    achieved: Date.now(),
+    trades: player.isUser ? [trade, ...player.trades] : trimBotTradeMetadata([trade, ...player.trades]),
+    achieved: now,
   };
 }
-export function liquidatePosition(player: Player, pos: Position) {
+export function liquidatePosition(player: Player, pos: Position, now: number = Date.now()) {
   const result = settleIsolatedLiquidation({
       margin: pos.margin,
       notional: pos.size,
@@ -213,7 +210,7 @@ export function liquidatePosition(player: Player, pos: Position) {
       fee: result.liquidationFee,
       liquidationFee: result.liquidationFee,
       marginLost: result.marginLost,
-      closed: Date.now(),
+      closed: now,
       reason: "Liquidation",
     };
   return {
@@ -222,8 +219,8 @@ export function liquidatePosition(player: Player, pos: Position) {
     realized: roundMoney(player.realized + result.netPnl),
     fees: roundMoney(player.fees + result.liquidationFee),
     positions: player.positions.filter((p) => p.id !== pos.id),
-    trades: [trade, ...player.trades],
-    achieved: Date.now(),
+    trades: player.isUser ? [trade, ...player.trades] : trimBotTradeMetadata([trade, ...player.trades]),
+    achieved: now,
   };
 }
 export function openFor(
@@ -234,6 +231,7 @@ export function openFor(
   lev: number,
   settings: Settings,
   quotes: Record<string, Quote>,
+  execution: { now: number; id: number } = { now: Date.now(), id: Date.now() + Math.random() },
 ) {
   const safeMargin = finite(m),
     safeLeverage = Math.floor(finite(lev)),
@@ -256,7 +254,7 @@ export function openFor(
   if (!settings.repeats && player.positions.some((p) => p.pair === pair))
     return player;
   const pos: Position = {
-    id: Date.now() + Math.random(),
+    id: execution.id,
     pair,
     side: direction,
     lev: safeLeverage,
@@ -273,13 +271,13 @@ export function openFor(
     maintenanceMarginRate: DEFAULT_MAINTENANCE_MARGIN_RATE,
     liquidationFeeRate: DEFAULT_LIQUIDATION_FEE_RATE,
     openFee: fee,
-    opened: Date.now(),
+    opened: execution.now,
   };
   return {
     ...player,
     balance: roundMoney(balance - safeMargin - fee),
     fees: roundMoney(finite(player.fees) + fee),
     positions: [pos, ...player.positions],
-    achieved: Date.now(),
+    achieved: execution.now,
   };
 }

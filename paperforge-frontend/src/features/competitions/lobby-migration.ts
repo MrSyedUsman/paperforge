@@ -1,3 +1,5 @@
+import { restoreBotState, restoreBotEntry, restoreBotDecision } from './bot-state.ts';
+import { restorePriceHistory } from './bot-history.ts';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { Position, Trade, Lobby } from "./types";
 import { calculateLiquidationPrice, DEFAULT_MAINTENANCE_MARGIN_RATE, DEFAULT_LIQUIDATION_FEE_RATE, roundMoney } from "../../lib/simulation/trading.ts";
@@ -37,6 +39,8 @@ export function safeLobby(raw: string | null): Lobby | null {
           (p.positions || []).some((pos: any) => !validPosition(pos)),
         normalizePosition = <T extends Position>(position: T): T => ({
           ...position,
+          botEntry: restoreBotEntry(position.botEntry),
+          botExit: restoreBotDecision((position as Position & {botExit?: unknown}).botExit),
           maintenanceMarginRate:
             finite(position.maintenanceMarginRate) ||
             DEFAULT_MAINTENANCE_MARGIN_RATE,
@@ -68,6 +72,7 @@ export function safeLobby(raw: string | null): Lobby | null {
           : 0;
       return {
         ...p,
+        botState: p.isUser ? undefined : restoreBotState(p.botState, finite(p.balance, allocation) + (p.positions || []).reduce((sum: number, pos: Position) => sum + finite(pos.margin), 0)),
         balance: corrupted ? allocation : finite(p.balance, allocation),
         realized: corrupted
           ? 0
@@ -82,6 +87,7 @@ export function safeLobby(raw: string | null): Lobby | null {
         achieved: finite(p.achieved, Date.now()),
       };
     });
+    x.botHistory = restorePriceHistory(x.botHistory);
     x.feeAccounting = 2;
     x.events = Array.isArray(x.events)
       ? x.events

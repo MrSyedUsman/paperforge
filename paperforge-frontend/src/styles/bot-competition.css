@@ -2496,3 +2496,5 @@
     font-size: 7px;
   }
 }
+
+.bc-bot-reason{padding:14px;margin:12px 0;border:1px solid #315343;border-radius:10px;background:#102019;overflow-wrap:anywhere}.bc-bot-reason small{display:block;margin-top:8px;color:#9bb8aa;line-height:1.6}

@@ -36,3 +36,13 @@ export function settleIsolatedLiquidation({ margin, notional, openFee = 0,
     netPnl: Math.round((-safeMargin - Math.max(0, Number(openFee) || 0)) * 100) / 100,
   };
 }
+
+export const LIVE_PRICE_MAX_AGE_MS = 45_000;
+
+export function competitionEligibility(opened, usedMargin, allocation) {
+  const used = roundMoney(usedMargin), required = roundMoney(allocation * .5);
+  return { opened, used, required, eligible: opened >= 1 && used >= required };
+}
+export function compareCompetitionScores(a, b) {
+  return b.equity - a.equity || b.realized - a.realized || a.fees - b.fees || a.achieved - b.achieved;
+}

@@ -50,7 +50,7 @@ so review actions stay reachable without scrolling across a wide table.
 The server has a 20-second provider deadline, the client a 30-second deadline.
 Successful cache entries last 24 hours and use user, facts, model and prompt
 version. Concurrent identical requests share one operation. Limits are process-
-local: five new attempts per user per minute and two concurrent distinct reviews.
+local: five new attempts per user per minute shared with pre-trade checks, two concurrent distinct generations per user, and ten concurrent operations globally per process.
 Cache hits do not consume new-generation allowance. Failed reviews are not cached.
 
 ## Verification
