@@ -164,12 +164,15 @@ try {
   const metrics = (cls) =>
     `<div class="${cls}">${["Gross result before both recorded fees", "Total opening and closing fees", "Net trading result", "Current equity placement"].map((label, i) => `<div><span><small>${label}</small></span><b>${i === 3 ? "Unavailable" : "-$9,999,999.99"}</b></div>`).join("")}</div>`;
   const common = `<section class="ai-review-content"><h3>What the evidence tells you</h3><p>${paragraph}</p>${evidence}<section class="ai-lesson"><h3>One practical lesson</h3><p>${paragraph}</p></section><p class="ai-review-timing">Saved explanation - generated in one second</p></section><div class="ai-review-loading" role="status"><b>Checking your snapshot</b><p>Keep exploring while the request finishes.</p></div><div class="ai-review-error" role="alert"><b>AI explanation unavailable</b><p>The provider is unavailable. Your calculated facts remain visible.</p><small>No AI narrative was generated.</small><button class="primary" disabled>Refresh after cooldown</button><button class="secondary">Try again</button></div><details open class="ai-data-details arena-debrief-limitations"><summary>Evidence and limitations</summary><p>Browser-submitted simulation data is unverified.</p><dl><div><dt>Long recorded evidence label for the liquidation settlement result</dt><dd>-$9,999,999.99</dd></div></dl></details>`;
-  const fixtures = {
+  let fixtures = {
     review: `<aside class="ai-review-panel"><header class="ai-review-heading"><div><span class="ai-eyebrow">PAPERFORGE COACH</span><h2>Your trade, explained</h2></div><button class="ai-review-close" aria-label="Close review">&times;</button></header><div class="ai-review-body"><div class="ai-trade-context"><b>VERYLONGPERPETUALUSDT</b><span>Long - Completed paper trade</span></div><label class="ai-trade-switch">Review another trade<select><option>VERYLONGPERPETUALUSDT - completed trade</option></select></label>${metrics("ai-facts-grid")}${common}</div><footer class="ai-review-footer">Gemini explains this unverified simulation snapshot. It does not place orders or predict returns.</footer></aside>`,
     risk: `<aside class="ai-review-panel trade-risk-panel"><header class="ai-review-heading"><div><span class="ai-eyebrow">BEFORE YOUR PAPER TRADE</span><h2>Understand the risk</h2></div><button class="ai-review-close" aria-label="Close risk">&times;</button></header><div class="ai-review-body"><div class="trade-risk-outdated"><b>This snapshot is outdated</b><p>The order inputs changed.</p><button>Check updated inputs</button></div>${metrics("ai-facts-grid")}<section class="trade-risk-scenarios"><h3>Hypothetical adverse scenario</h3><article class="adverse"><h4>Adverse price move</h4><p>${paragraph}</p><small>Hypothetical example, not a price prediction.</small><dl>${["Gross PnL before fees", "Opening and estimated closing fees", "Net PnL"].map((label) => `<div><dt>${label}</dt><dd>-$9,999,999.99</dd></div>`).join("")}</dl></article></section>${common}</div><footer class="ai-review-footer">Unverified paper-trading snapshot. This check does not approve, place or change an order.</footer></aside>`,
     debrief: `<aside class="arena-debrief-panel"><header class="arena-debrief-heading"><div><span class="ai-eyebrow">AFTER THE ARENA</span><h2>Your arena, understood</h2><p>Evidence and your next practice goal.</p></div><button class="ai-review-close" aria-label="Close debrief">&times;</button></header><div class="arena-debrief-body">${metrics("arena-debrief-kpis")}<section><span class="arena-debrief-step">YOUR ARENA STORY</span><p>${paragraph}</p>${evidence}</section><section class="arena-debrief-mission"><h3>Your next practice goal</h3><p>${paragraph}</p><div><b>Before the next arena, ask yourself</b><p>How do fees change the interpretation of a profitable price move?</p></div></section>${common}</div><footer class="arena-debrief-footer">Unverified paper-trading competition. This report does not predict future results or change your records.</footer></aside>`,
     radar: `<aside class="arena-radar-panel"><header><div><span class="ai-eyebrow">READ THE ARENA</span><h2>Arena Radar</h2><p>Observe the competition and understand the differences.</p></div><button class="ai-review-close" aria-label="Close Radar">&times;</button></header><div class="arena-radar-body"><div class="radar-controls"><button class="primary" disabled>Refresh in thirty seconds</button><small>Refresh only when you choose.</small></div><div class="radar-snapshot"><b>At this snapshot - 11:59:59 PM</b><span>Five minutes remained</span><p>Live standings may have changed.</p></div>${metrics("radar-metrics")}<section><h3>The arena headline</h3><p>${paragraph}</p>${evidence}</section><section class="radar-question"><h3>Your observation challenge</h3><p>What difference do you notice between participation and current equity?</p></section>${common}</div><footer>Unverified paper-trading snapshots. Educational commentary, not a trading instruction or final result.</footer></aside>`,
   };
+  if (process.argv.includes("--captured")) fixtures = Object.fromEntries(
+    ["review", "risk", "debrief", "radar"].map(name => [name, fs.readFileSync(path.join(os.tmpdir(), `paperforge-visual-${name}-desktop.html`), "utf8")]),
+  );
   const audit = () => {
     const panel = document.querySelector("aside"),
       body = panel.querySelector(
@@ -265,6 +268,7 @@ try {
         height: innerHeight,
       },
       overflow: body.scrollWidth > body.clientWidth + 1,
+      overflowElements: [...body.querySelectorAll('*')].filter(el=>el.getClientRects().length && el.getBoundingClientRect().right>br.right+1).slice(0,12).map(el=>({tag:el.tagName,className:el.className,text:el.textContent.slice(0,70),width:el.getBoundingClientRect().width})),
       bodyHeight: br.height,
       close: { width: c.width, height: c.height, bottom: c.bottom },
       tiny,
@@ -349,7 +353,7 @@ try {
       `document.documentElement.style.fontSize='200%';document.getElementById('fixture-root').innerHTML=${JSON.stringify(html)}`,
     );
     const enlarged = await evaluate(`(${audit.toString()})()`);
-    assert.ok(!enlarged.overflow, `${name}: enlarged text overflow`);
+    assert.ok(!enlarged.overflow, `${name}: enlarged text overflow ${JSON.stringify(enlarged.overflowElements)}`);
     assert.ok(
       enlarged.bodyHeight > 25,
       `${name}: enlarged text body collapsed`,

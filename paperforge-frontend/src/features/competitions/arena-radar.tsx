@@ -19,6 +19,8 @@ import {
   type RadarResult,
 } from "./arena-radar-contract";
 import { fetchRadarFacts, fetchRadar, RadarError } from "./arena-radar-api";
+import { RadarVisualSummary } from "./arena-visuals";
+import { Takeaway, InsightIcon } from "@/components/ai-visuals";
 export function ArenaRadar({
   lobby,
   quotes,
@@ -270,7 +272,9 @@ export function ArenaRadar({
                   <p>{facts.comparisonNote} Live standings may have changed.</p>
                   {changed && <strong>New activity since this update</strong>}
                 </div>
-                <section className="radar-facts">
+                <Takeaway title="The arena headline / calculated"><h3>{facts.headline.title}</h3><details><summary>Headline evidence and explanation</summary>{citations(facts.headline.evidenceIds)}{result && <><span className="ai-visual-note">Gemini interpretation</span><p>{result.review.headline.text}</p></>}</details></Takeaway>
+                <RadarVisualSummary user={user} opponent={opponent}/>
+                <details className="radar-facts"><summary>Balance and PnL details</summary>
                   <span className="arena-debrief-step">
                     APPLICATION CALCULATIONS
                   </span>
@@ -289,25 +293,12 @@ export function ArenaRadar({
                       </div>
                     ))}
                   </div>
-                  <p>
-                    <b>Participation:</b> {money(user.usedMargin)} /{" "}
-                    {money(user.requiredMargin)} &middot;{" "}
-                    {user.eligible
-                      ? "Currently meets the participation requirement"
-                      : "Requirement not met at this snapshot"}
-                  </p>
                   <small>
                     Equity includes unrealized PnL; hypothetical closing fees
                     are not deducted. Current participation does not guarantee a
                     final award.
                   </small>
-                </section>
-                <section className="radar-headline">
-                  <span className="arena-debrief-step">THE ARENA HEADLINE</span>
-                  <h3>{facts.headline.title}</h3>
-                  {citations(facts.headline.evidenceIds)}
-                  {result && <p>{result.review.headline.text}</p>}
-                </section>
+                </details>
               </>
             )}
             {status === "loading" && (
@@ -363,7 +354,7 @@ export function ArenaRadar({
                 </section>
                 <section className="radar-question">
                   <span className="arena-debrief-step">
-                    YOUR OBSERVATION CHALLENGE
+                    <InsightIcon kind="practice"/> YOUR OBSERVATION CHALLENGE
                   </span>
                   <p>{result.review.question.text}</p>
                   {citations(result.review.question.evidenceIds)}
