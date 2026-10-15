@@ -8,4 +8,6 @@
 .signout:hover{color:var(--text)}
 .auth-card label{display:flex;flex-direction:column;gap:7px;color:var(--muted);font-size:11px}
 .auth-card input{height:40px;background:#0a1017;border:1px solid #293440;border-radius:6px;padding:0 11px;outline:0;color:var(--text)}
-.auth-card input:focus{border-color:var(--green)}
+/* One focus indicator only: the global green outline (experience.css) is enough; a second border colour made it look doubled. */
+.auth-card input:focus-visible{border-color:#293440}
+.auth-card input:disabled{opacity:.8;cursor:not-allowed;color:var(--text);-webkit-text-fill-color:var(--text)}
