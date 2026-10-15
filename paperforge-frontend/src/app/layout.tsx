@@ -20,6 +20,7 @@ import "@/styles/header.css";
 import "@/styles/trade-review.css";
 import "@/styles/trade-risk.css";
 import "@/styles/ai-panels.css";
+import "@/styles/page-background.css";
 export const metadata: Metadata = {
   title: "PaperForge Futures",
   description: "Practise crypto futures trading with virtual funds, live market data, and bot competitions.",
