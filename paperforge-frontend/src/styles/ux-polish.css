@@ -18,3 +18,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 @media(max-width:760px){.top{position:sticky}.top-right{margin-left:auto}.global-search{min-width:42px;width:42px;height:42px;padding:0;justify-content:center}.global-search>span,.global-search>kbd{display:none}.page{padding-left:16px;padding-right:16px}.p3-hero-copy h1,.p3-comp-hero h1{font-size:clamp(37px,10vw,44px)}.p3-account-card{min-width:0}.p3-market-grid{grid-template-columns:1fr}.p3-page-title{padding-top:36px}.p3-metric-grid{grid-template-columns:1fr 1fr}.p3-faucet{align-items:start}.p3-position-section,.p3-history-section,.p3-edit-profile,.p3-profile-side>section{padding:18px}.market-modal{max-height:calc(100dvh - 32px)}.modal-list{max-height:calc(100dvh - 145px)}.confirm-backdrop{padding:12px}.confirm-card{max-height:calc(100dvh - 24px);overflow:auto}.toast{left:16px;right:16px;bottom:82px}.big-chart{min-height:300px}.trade-lower{min-height:190px}footer{height:auto;min-height:60px;padding:14px 16px;margin-bottom:64px;gap:12px;line-height:1.45}footer>span:last-child{display:none}}
 @media(max-width:430px){.logo{font-size:17px}.logo>i{width:32px;height:32px}.avatar{width:36px;height:36px}.p3-metric-grid{grid-template-columns:1fr}.p3-profile-hero{display:grid;grid-template-columns:auto 1fr}.p3-profile-hero>div:last-child{min-width:0}.p3-profile-hero p{grid-column:1/-1}.p3-faucet{grid-template-columns:40px 1fr;padding:17px}.p3-faucet-icon{width:40px;height:40px}.p3-faucet h3{font-size:15px}.p3-competition-tease{padding:22px}.system-card>div{display:grid}.mobile-nav span{font-size:8px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}.feed-dot,.chart-state i{animation:none!important}}
+
+/* Logo tile: the image replaces the old lettermark, so drop the solid background and clip to the tile's radius. */
+.logo > i.brand-mark,
+.bc-share-brand > i.brand-mark {
+  background: transparent;
+  padding: 0;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(55, 212, 154, 0.35), 0 0 14px rgba(55, 212, 154, 0.25);
+}
+.brand-mark > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}

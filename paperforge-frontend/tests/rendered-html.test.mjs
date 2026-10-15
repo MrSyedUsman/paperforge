@@ -54,7 +54,7 @@ test("renders the authenticated application shell, metadata and styles through t
   assert.match(html, /PaperForge/);
   assert.match(html, /Loading|Sign in/);
   assert.doesNotMatch(html, /Portfolio overview/);
-  assert.match(html, /rel="icon"[^>]*href="\/icon\.svg/);
+  assert.match(html, /rel="icon"[^>]*href="\/icon\.png/);
   const cssUrls = [...html.matchAll(/href="([^"\s]+\.css(?:\?[^"\s]*)?)"/g)].map(match => match[1]);
   assert.ok(cssUrls.length, "Application styles are bundled");
   for (const url of cssUrls) {
@@ -64,9 +64,12 @@ test("renders the authenticated application shell, metadata and styles through t
 });
 
 test("standalone server serves application icons, coin assets and the 404 screen", async () => {
-  const icon = await fetch(`${baseUrl}/icon.svg`);
+  const icon = await fetch(`${baseUrl}/icon.png`);
   assert.equal(icon.status, 200);
-  assert.match(icon.headers.get("content-type") ?? "", /image\/svg\+xml/);
+  assert.match(icon.headers.get("content-type") ?? "", /image\/png/);
+  const logo = await fetch(`${baseUrl}/logo.png`);
+  assert.equal(logo.status, 200);
+  assert.match(logo.headers.get("content-type") ?? "", /image\/png/);
   const coin = await fetch(`${baseUrl}/coin-icons/btc.svg`);
   assert.equal(coin.status, 200);
   assert.match(await coin.text(), /<svg/);

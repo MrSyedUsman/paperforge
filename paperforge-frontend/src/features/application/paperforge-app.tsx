@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { BrandMark } from "@/components/brand-mark";
 import { useAuth } from "@/features/auth/auth-provider";
 import type { ApiUser } from "@/features/auth/api-client";
 import type { Pos } from "@/features/account/types";
@@ -243,7 +244,7 @@ export function PaperForgeApp({ authUser }: { authUser: ApiUser }) {
           aria-label="PaperForge home"
           onClick={() => setView("Home")}
         >
-          <i>P</i>Paper<span>Forge</span>
+          <BrandMark />Paper<span>Forge</span>
         </button>
         <nav aria-label="Primary navigation">
           {(
@@ -486,7 +487,7 @@ export function PaperForgeApp({ authUser }: { authUser: ApiUser }) {
       )}
       {view === "Home" ? <footer className="home-footer">
         <div className="home-footer-main">
-          <div><div className="logo"><i>P</i><b>Paper <span>Forge</span></b></div><p>Practise today. Learn for tomorrow.</p></div>
+          <div><div className="logo"><BrandMark /><b>Paper <span>Forge</span></b></div><p>Practise today. Learn for tomorrow.</p></div>
           <nav aria-label="Footer trading navigation"><b>Explore</b><button onClick={() => setView("Trade")}>Trading terminal</button><button onClick={() => setView("Markets")}>Markets</button><button onClick={() => setView("Portfolio")}>Portfolio & journal</button></nav>
           <nav aria-label="Footer competition navigation"><b>Compete</b><button onClick={() => setView("Competitions")}>Bot practice</button><button onClick={() => setView("Leaderboards")}>Local leaderboards</button><span>Human multiplayer · coming later</span></nav>
           <div className="home-footer-note"><b>PRACTICE / IMPROVE / REPEAT</b><p>Virtual funds. No deposits or withdrawals. Progress is saved on this browser, and results are not verified.</p></div>

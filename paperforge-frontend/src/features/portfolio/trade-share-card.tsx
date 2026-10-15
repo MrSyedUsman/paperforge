@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, react-hooks/exhaustive-deps, @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
+import { brandLogo, drawBrandLogo } from "@/lib/brand-logo";
+
+// Start loading the logo now so it is ready when a card is painted.
+void brandLogo();
 
 const cash = (value: number) => `${value < 0 ? "−" : ""}$${Math.abs(Number(value) || 0).toFixed(2)}`;
 const signed = (value: number, suffix = "") => `${value >= 0 ? "+" : "−"}${Math.abs(Number(value) || 0).toFixed(2)}${suffix}`;
@@ -31,8 +35,10 @@ export function TradeShareCard({ trade, close }: { trade: any; close: () => void
     const glow = ctx.createRadialGradient(1050, 85, 0, 1050, 85, 430);
     glow.addColorStop(0, liquidated ? "rgba(255,100,120,.25)" : "rgba(59,219,164,.22)"); glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow; ctx.fillRect(610, 0, 590, 520);
-    ctx.fillStyle = "#3bdba4"; ctx.beginPath(); ctx.roundRect(58, 48, 58, 58, 15); ctx.fill();
-    ctx.fillStyle = "#06130f"; ctx.font = "800 34px Arial"; ctx.fillText("P", 76, 88);
+    if (!drawBrandLogo(ctx, 58, 48, 58, 15)) {
+      ctx.fillStyle = "#3bdba4"; ctx.beginPath(); ctx.roundRect(58, 48, 58, 58, 15); ctx.fill();
+      ctx.fillStyle = "#06130f"; ctx.font = "800 34px Arial"; ctx.fillText("P", 76, 88);
+    }
     ctx.fillStyle = "#f4f8fb"; ctx.font = "700 30px Arial"; ctx.fillText("Paper", 136, 86);
     ctx.fillStyle = "#3bdba4"; ctx.fillText("Forge", 223, 86);
     ctx.fillStyle = "#82a4b3"; ctx.font = "600 15px Arial"; ctx.fillText("VIRTUAL TRADE RESULT", 60, 145);
