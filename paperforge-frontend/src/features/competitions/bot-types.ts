@@ -1,10 +1,77 @@
-export type BotKind = 'trend' | 'momentum' | 'breakout' | 'reversion' | 'conservative' | 'adaptive' | 'volatility';
-export type Regime = 'trend' | 'range' | 'breakout' | 'uncertain';
+export type BotKind =
+  | "trend"
+  | "momentum"
+  | "breakout"
+  | "reversion"
+  | "conservative"
+  | "adaptive"
+  | "volatility";
+export type Regime = "trend" | "range" | "breakout" | "uncertain";
 export const BOT_STRATEGY_VERSION = 1;
 export type PriceSample = { at: number; sourceAt: number; price: number };
 export type PriceHistory = Record<string, PriceSample[]>;
 export type BotEvidence = Record<string, number>;
-export type BotEntry = { version: number; kind: BotKind; regime: Regime; reason: string; signals: BotEvidence; reference: number; at: number };
-export type BotDecisionRecord = { at: number; action: 'hold' | 'open' | 'close'; pair?: string; reason: string; signals: BotEvidence; usedMargin: number; requiredMargin: number; adjustment: string; limitations: string[]; version: number };
-export type BotState = { version: number; sequence: number; nextDecisionAt: number; lastDecisionAt: number; cooldownUntil: number; peakEquity: number; regime: Regime; regimePair: string; regimeSince: number; candidateRegime: Regime; candidateSince: number; bestNet: Record<string, number>; decisions: BotDecisionRecord[] };
-export type BotDecision = { action: 'hold'; reason: string; signals: BotEvidence; limitations: string[] } | { action: 'open'; pair: string; side: 'Long' | 'Short'; margin: number; leverage: number; reason: string; signals: BotEvidence; entry: BotEntry; limitations: string[] } | { action: 'close'; positionId: number; pair: string; reason: string; signals: BotEvidence; limitations: string[] };
+export type EntryQuality = "preferred" | "developing" | "exploratory";
+export type BotEntry = {
+  quality?: EntryQuality;
+  version: number;
+  kind: BotKind;
+  regime: Regime;
+  reason: string;
+  signals: BotEvidence;
+  reference: number;
+  at: number;
+};
+export type BotDecisionRecord = {
+  at: number;
+  action: "hold" | "open" | "close";
+  pair?: string;
+  reason: string;
+  signals: BotEvidence;
+  usedMargin: number;
+  requiredMargin: number;
+  adjustment: string;
+  limitations: string[];
+  version: number;
+};
+export type BotState = {
+  version: number;
+  sequence: number;
+  nextDecisionAt: number;
+  lastDecisionAt: number;
+  cooldownUntil: number;
+  peakEquity: number;
+  regime: Regime;
+  regimePair: string;
+  regimeSince: number;
+  candidateRegime: Regime;
+  candidateSince: number;
+  bestNet: Record<string, number>;
+  decisions: BotDecisionRecord[];
+};
+export type BotDecision =
+  | {
+      action: "hold";
+      reason: string;
+      signals: BotEvidence;
+      limitations: string[];
+    }
+  | {
+      action: "open";
+      pair: string;
+      side: "Long" | "Short";
+      margin: number;
+      leverage: number;
+      reason: string;
+      signals: BotEvidence;
+      entry: BotEntry;
+      limitations: string[];
+    }
+  | {
+      action: "close";
+      positionId: number;
+      pair: string;
+      reason: string;
+      signals: BotEvidence;
+      limitations: string[];
+    };

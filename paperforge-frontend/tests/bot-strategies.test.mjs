@@ -14,39 +14,39 @@ import { arena, player, markets, quote, simulateArena } from './bot-fixtures.mjs
 const signal = changes => ({ price: 100.3, previous: 100.2, fast: 100.15, slow: 100, trend: .15, slope: .04, shortReturn: .2, longReturn: .3, acceleration: .02, lastReturn: .05, volatility: .04, movement: .06, volatilityRatio: 1, rangeHigh: 100.2, rangeLow: 99.9, rangeWidth: .3, z: 1, previousZ: .9, referenceMean: 100, meanSlope: .04, meanReady: true, volatilityReady: true, breakout: 0, pullback: true, evidence: { shortReturnPercent: .2 }, ...changes });
 const settings = arena().settings;
 const position = (kind, changes = {}) => ({ id: 1, pair: 'BTCUSDT', side: 'Long', lev: 5, margin: 100, size: 500, entry: 100, liquidation: 80.6, openFee: .25, opened: 1_000_000, botEntry: { version: 1, kind, regime: 'trend', reason: 'test', reference: 100.5, signals: {}, at: 1_000_000 }, ...changes });
-test('TrendFox requires directional agreement and holds without a valid trend', () => {
+test('TrendFox preferred setup requires directional agreement and holds without a valid trend', () => {
   assert.equal(entrySignal('trend', signal(), 'Medium').side, 'Long');
   assert.equal(entrySignal('trend', signal({ trend: 0, slope: 0 }), 'Medium'), null);
   assert.equal(entrySignal('trend', signal({ slope: -.04 }), 'Medium'), null);
   assert.equal(entrySignal('trend', signal({ price: 102 }), 'Medium'), null);
   assert.equal(exitDecision(position('trend'), signal({ trend: -.05 }), 100.1, 1_010_000, BOT_POLICIES.TrendFox, newBotState(1000), 60_000).action, 'close');
 });
-test('NovaQuant ranks recent momentum and rejects fading or overextended entries', () => {
+test('NovaQuant preferred setup ranks recent momentum and rejects fading or overextended entries', () => {
   assert.equal(entrySignal('momentum', signal(), 'Medium').side, 'Long');
   assert.equal(entrySignal('momentum', signal({ shortReturn: -.2 }), 'Medium'), null);
   assert.equal(entrySignal('momentum', signal({ shortReturn: 2 }), 'Medium'), null);
   assert.equal(exitDecision(position('momentum'), signal({ shortReturn: -.02 }), 100.1, 1_010_000, BOT_POLICIES.NovaQuant, newBotState(1000), 60_000).reason, 'Recent momentum faded or reversed');
 });
-test('CandleByte needs confirmed range breaks and exits failed breakouts', () => {
+test('CandleByte preferred setup needs confirmed range breaks and exits failed breakouts', () => {
   assert.equal(entrySignal('breakout', signal(), 'Medium'), null);
   assert.equal(entrySignal('breakout', signal({ breakout: 1 }), 'Medium').side, 'Long');
   assert.equal(exitDecision(position('breakout'), signal(), 100.1, 1_010_000, BOT_POLICIES.CandleByte, newBotState(1000), 60_000).reason, 'Price returned inside the original breakout range');
 });
-test('RiskRaven requires a recovering deviation in a weak trend and takes a fee-covered mean exit', () => {
+test('RiskRaven preferred setup requires a recovering deviation in a weak trend and takes a fee-covered mean exit', () => {
   const s = signal({ price: 99.7, previous: 99.6, slow: 100, trend: -.02, slope: 0, meanSlope: .01, longReturn: -.05, z: -1.4, previousZ: -1.8 });
   assert.equal(entrySignal('reversion', s, 'Medium').side, 'Long');
   assert.equal(entrySignal('reversion', { ...s, lastReturn: -.1 }, 'Medium'), null);
   assert.equal(entrySignal('reversion', { ...s, meanSlope: -.1 }, 'Medium'), null);
   assert.equal(exitDecision(position('reversion', { botEntry: { ...position('reversion').botEntry, reference: 100.2 } }), s, 100.3, 1_010_000, BOT_POLICIES.RiskRaven, newBotState(1000), 60_000).reason, 'Price reached the entry reference mean after covering fees');
 });
-test('MomentumX requires stronger agreement, rejects volatility and has the lowest exposure policy', () => {
+test('MomentumX preferred setup requires stronger agreement, rejects volatility and has the lowest exposure policy', () => {
   assert.ok(entrySignal('conservative', signal(), 'Medium'));
   assert.equal(entrySignal('conservative', signal({ volatility: .2 }), 'Medium'), null);
   assert.equal(entrySignal('conservative', signal({ shortReturn: .08 }), 'Medium'), null);
   for (const p of Object.values(BOT_POLICIES).filter(p => p.kind !== 'conservative')) { assert.ok(BOT_POLICIES.MomentumX.normalMargin < p.normalMargin); assert.ok(BOT_POLICIES.MomentumX.leverage < p.leverage); }
   assert.equal(exitDecision(position('conservative'), signal(), 101, 1_010_000, BOT_POLICIES.MomentumX, newBotState(1000), 60_000).action, 'close');
 });
-test('DeltaBot uses measured regimes with hysteresis and explicit transition exits', () => {
+test('DeltaBot preferred setup uses measured regimes with hysteresis and explicit transition exits', () => {
   assert.equal(entrySignal('adaptive', signal(), 'Medium', false, 'uncertain'), null);
   assert.ok(entrySignal('adaptive', signal(), 'Medium', false, 'trend'));
   let state = newBotState(1000); state = updateRegime(state, 'trend', 10_000, true); assert.equal(state.regime, 'uncertain');
@@ -57,7 +57,7 @@ test('DeltaBot uses measured regimes with hysteresis and explicit transition exi
   assert.equal(exitDecision(position('adaptive'), signal(), 100.1, 1_010_000, BOT_POLICIES.DeltaBot, { ...state, regime: 'range' }, 60_000).reason, 'Confirmed regime transition no longer supports the original entry');
   assert.equal(classifyRegime(signal({ breakout: 1, volatilityRatio: 2 })), 'breakout');
 });
-test('AtlasAlgo requires volatility expansion plus an independent direction', () => {
+test('AtlasAlgo preferred setup requires volatility expansion plus an independent direction', () => {
   assert.equal(entrySignal('volatility', signal(), 'Medium'), null);
   assert.ok(entrySignal('volatility', signal({ volatilityRatio: 2 }), 'Medium'));
   assert.equal(entrySignal('volatility', signal({ volatilityRatio: 2, shortReturn: -.2 }), 'Medium'), null);
@@ -169,5 +169,5 @@ test('legacy or corrupted optional bot metadata is safely bounded without removi
 test('short arenas with cold history still use real signals and retain natural misses', () => {
   const lobby=simulateArena({duration:1,warmup:false,scenario:'trend',difficulty:'Hard'});
   assert.ok(lobby.players.some(p=>!p.isUser&&p.trades.length));
-  assert.ok(lobby.players.filter(p=>!p.isUser).every(p=>p.trades.every(t=>t.opened>=lobby.start+16000)));
+  assert.ok(lobby.players.filter(p=>!p.isUser).every(p=>p.trades.every(t=>t.opened>=lobby.start+8000&&t.botEntry?.signals.sampleCount>=5)));
 });

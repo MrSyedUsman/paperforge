@@ -6,15 +6,17 @@ manual trading, eligibility, ranking, awards or final settlement.
 
 ## Specialities
 
-| Bot | Actual entry policy | Exit policy |
+Specialities are preferences with three grades: preferred, developing and small exploratory. A bot first looks for its original strongest setup, then accepts weaker evidence consistent with its style. Exploratory opportunities require additional elapsed/idle time or participation lag. All use observed prices, not random directions.
+
+| Bot | Actual entry preference | Exit policy |
 | --- | --- | --- |
-| TrendFox | Aligned fast/slow sampled-price averages and slow-average slope; favours recovery after a pullback and rejects stretched entries. | Trend weakness/reversal, risk stop, trailing net profit or a completed holding review. |
-| NovaQuant | Recent and broader returns agree; rejects fading acceleration and extreme extension; ranks normalized momentum. | Momentum fades/reverses, a fee-adjusted target, risk stop or holding review. |
-| CandleByte | Two observations confirm a buffered move beyond a prior sampled-price range. The range excludes both confirming observations. | Return inside the original range, risk stop, trailing profit or holding review. |
-| RiskRaven | A sufficiently large deviation starts recovering toward a longer reference mean while the mean slope is weak. | Fee-covered return to the entry reference mean, an expanding adverse deviation, a new adverse trend, risk stop or holding review. |
-| MomentumX | Stronger trend/momentum agreement, low realized volatility and observed movement beyond fees. Lowest normal margin, leverage and position count. | Modest net-profit target, trend weakness, risk stop, trailing profit or holding review. |
-| DeltaBot | Selects trend, range/reversion or breakout rules from a measured regime. Confirmation and minimum regime lifetime prevent rapid switching. | Original entry rules remain attached to each position; confirmed regime changes are explicit exit reasons. |
-| AtlasAlgo | Realized-volatility expansion plus independent directional confirmation; ranks expansion and uses valid quote-volume liquidity as a small ranking factor. | Expansion/direction fades, volatility-aware stop, net-profit target, trailing profit or holding review. |
+| TrendFox | Confirmed trends/pullbacks first; smaller developing trend with recent directional support. | Trend invalidation, risk stop, trailing net profit or holding review. |
+| NovaQuant | Strong momentum first; modest recent continuation is also acceptable. | Fading momentum, fee-adjusted target, risk stop or review. |
+| CandleByte | Confirmed sampled-range breaks first; can make a smaller anticipatory entry near a boundary. | Preferred entries invalidate at the old range; developing entries use their recorded fast-average reference. Risk/trailing/review also apply. |
+| RiskRaven | Large recovering deviations first; smaller observed recoveries toward a recent mean can qualify. A truly monotonic path can still offer no entry. | Fee-covered mean return, adverse deviation/trend, risk stop or review. |
+| MomentumX | Basic directional agreement with the lowest leverage/exposure and one concurrent position. Stronger agreement is preferred, not compulsory. | Modest fee-adjusted target, trend/risk/trailing exit; short arenas also have an independent bounded exposure-review window. |
+| DeltaBot | Confirmed regime rules first; provisional trend, range recovery or boundary evidence while confirmation develops. | Recorded entry regime/reference remains attached; confirmed regime transition, invalidation, risk/trailing/review. |
+| AtlasAlgo | Strong volatility expansion first; smaller entries can use moderate measured variation with directional support. | Expansion/direction invalidation, risk stop, fee-adjusted target or review. |
 
 MomentumX keeps its existing name and Conservative trader label. CandleByte
 uses sampled ranges, not candle patterns. AtlasAlgo uses standard deviation of
@@ -40,13 +42,7 @@ before the decision timestamp. Quotes use the existing 45-second freshness rule;
 future timestamps are rejected. A sampling gap longer than six seconds requires
 a new contiguous tail to warm up. Browser throttling does not replay missed ticks.
 
-Each arena stores at most 30 markets with 120 samples each. History collected
-while configuring an arena can be reused. A cold one-minute arena needs nine
-observations for basic signals (about sixteen seconds from its first sample),
-twenty for mean reversion (about thirty-eight seconds), and twelve for volatility
-(about twenty-two seconds). Longer arenas use slower windows: basic signals need
-twenty observations and mean reversion thirty-eight. Missing history causes a
-hold with an explicit limitation, never a fabricated signal.
+Each arena stores at most thirty markets with one hundred twenty samples each. History collected during configuration can be reused. A cold short arena can calculate a provisional signal from five real observations (about eight seconds with two-second sampling); longer arenas require seven. Full preferred windows remain richer: nine basic short observations, twenty for short mean reversion and twelve for preferred volatility. Longer preferred windows use twenty basic and thirty-eight mean observations. Provisional status and sample count are recorded. New timestamps on unchanged latest prices do not create entry evidence.
 
 ## Risk and participation
 
@@ -59,10 +55,10 @@ $500 cumulative margin, potentially across several trades.
 The planner starts tracking progress immediately, estimates remaining meaningful
 entry opportunities, and aims for the margin milestone by three quarters of the
 arena duration. It can increase normal sizing by at most 1.4 times when projected
-participation needs it, or 1.8 times when behind, always within the speciality's
+participation needs it, or 1.8 times when behind (1.9 for the lower-exposure conservative policy), always within the speciality's
 per-position and total-margin limits, balance including opening fees, drawdown
 reduction and lobby constraints. After eligibility, normal sizing resumes.
-Eligibility never creates a signal or a forced exit, and does not waive fees.
+Setup quality also reduces sizing and leverage (developing factor 0.85, exploratory 0.65). Projections account for this reduction rather than systematically undershooting the final margin milestone. Orders are sized in cents. Eligibility can widen accepted signal quality after bounded idle time, but never creates direction, waives fees, or forces an exit.
 
 | Bot | Normal margin / allocation | Maximum per-position margin | Total committed margin cap | Base leverage cap |
 | --- | --- | --- | --- | --- |
@@ -77,17 +73,17 @@ Eligibility never creates a signal or a forced exit, and does not waive fees.
 These are caps rather than promises. Lobby leverage/position limits can be lower.
 Drawdown reduces sizing; MomentumX also responds to drawdown from its equity
 peak. AtlasAlgo reduces sizing and leverage as measured volatility rises. All
-bots require observed room beyond the estimated round-trip fee plus a buffer.
+preferred setups retain their observed-movement filter. Developing setups no longer require a universal movement estimate above round-trip fees; it cannot establish future fee coverage.
 Risk stops may realize losses including fees; profitable exits use fee-adjusted
 results. Profitability or qualification is never guaranteed.
 
-One-minute base decision intervals are 4.5/3/2.5/2 seconds for Easy/Medium/Hard/
+One-minute base decision intervals are 3/2.5/2/1.8 seconds for Easy/Medium/Hard/
 Expert, adjusted by speciality. Longer arenas use 12/8.5/6/4.5 seconds. Falling
 behind can shorten a non-conservative bot's interval modestly. Easy bots can
 wait an additional observation using seeded patience; direction is never random.
 Higher difficulty does not universally increase leverage. No new entry is made
 with fewer than eight seconds remaining, and longer planned holds can require
-more time. Holds end by strategy/risk rules, not a participation round-trip quota.
+more time. Holds end by strategy/risk/review rules, not a participation round-trip quota. Entries are capped at five for conservative bots, seven for momentum, and six for the others in a one-minute arena; longer limits scale by duration with a maximum of one hundred twenty. Existing positions are still managed after the entry cap. Recently exited same-side setups require changed price evidence before re-entry. Exceptional observed return volatility above 0.9 percent blocks new entries; individual specialties can have lower limits.
 
 ## Metadata, reload and compatibility
 
@@ -115,7 +111,7 @@ The strategy tests cover all seven specialities, fees, stops, liquidation,
 sampling, future/stale data, drawdown, participation, bounds, seeded reproducibility,
 deadlines, legacy records, reloads and unchanged manual-trading accounting.
 
-`npm run evaluate:bots -- --write` regenerates `bot-evaluation.json`. It runs six
+The older broad-path benchmark `npm run evaluate:bots -- --write` regenerates `bot-evaluation.json`. It runs six
 constructed price paths (trend, range, breakout, reversal, volatility expansion,
 and flat), three seeds, all four difficulties, warm/cold one-minute starts and
 warm ten-minute starts. The selected scenario mix is deliberately artificial;
@@ -133,7 +129,7 @@ or BOT_UI_TEST_PORT if needed. Screenshots go to the OS temporary directory.
 Further live-market tuning is expected: narrow ranges can be dominated by fees,
 selective bots can miss eligibility, cold starts have less usable evidence, and
 short noisy signals do not establish predictive skill. No bot has future data or
-learns from a model. Gemini strategies and Arena Debrief remain separate future work.
+learns from a model. Arena Radar and Arena Debrief can explain retained recognized reasons; they do not control these decisions. Their prompts, request budgets and authentication are unchanged.
 
 ## Meet the bots guide
 
@@ -154,3 +150,7 @@ After building, run `node --experimental-strip-types scripts/verify-bot-guide-ui
 for an isolated synthetic-browser check of both entry points, responsive content,
 keyboard/background behaviour and expiry during an open guide. The test uses
 port 3021 by default (override BOT_GUIDE_UI_TEST_PORT) and CHROME_PATH if needed.
+
+## Activity comparison
+
+The current before/after acceptance matrix and per-bot measurements are documented in [Bot activity results](bot-activity-results.md). It includes gentle movement, cold/warm one-minute starts, longer durations, all difficulties and restricted custom markets. Flat paths are measured separately. Historical eligibility reports describe the older strict implementation and are retained as reference, not current production predictions.
