@@ -69,7 +69,7 @@ export function CompetitionShareCard({ user, lobby, quotes }: any) {
     glow.addColorStop(1, "rgba(55,212,154,0)");
     ctx.fillStyle = glow;
     ctx.fillRect(600, 0, 600, 520);
-    if (!drawBrandLogo(ctx, 58, 48, 58, 15)) {
+    if (!drawBrandLogo(ctx, 58, 48, 58)) {
       ctx.fillStyle = "#39d8a0";
       rounded(ctx, 58, 48, 58, 58, 15);
       ctx.fill();

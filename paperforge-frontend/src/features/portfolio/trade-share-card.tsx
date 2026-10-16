@@ -35,7 +35,7 @@ export function TradeShareCard({ trade, close }: { trade: any; close: () => void
     const glow = ctx.createRadialGradient(1050, 85, 0, 1050, 85, 430);
     glow.addColorStop(0, liquidated ? "rgba(255,100,120,.25)" : "rgba(59,219,164,.22)"); glow.addColorStop(1, "rgba(0,0,0,0)");
     ctx.fillStyle = glow; ctx.fillRect(610, 0, 590, 520);
-    if (!drawBrandLogo(ctx, 58, 48, 58, 15)) {
+    if (!drawBrandLogo(ctx, 58, 48, 58)) {
       ctx.fillStyle = "#3bdba4"; ctx.beginPath(); ctx.roundRect(58, 48, 58, 58, 15); ctx.fill();
       ctx.fillStyle = "#06130f"; ctx.font = "800 34px Arial"; ctx.fillText("P", 76, 88);
     }
