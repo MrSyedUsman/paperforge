@@ -11,15 +11,13 @@ export function brandLogo(): HTMLImageElement | null {
   return logo.complete && logo.naturalWidth > 0 ? logo : null;
 }
 
-/** Draws the logo as a rounded square. Returns false when it is not available so callers can draw a fallback. */
-export function drawBrandLogo(ctx: CanvasRenderingContext2D, x: number, y: number, size: number, radius: number): boolean {
+/** Draws the logo inside a size x size box, keeping its aspect ratio. Returns false when it is not available so callers can draw a fallback. */
+export function drawBrandLogo(ctx: CanvasRenderingContext2D, x: number, y: number, size: number): boolean {
   const image = brandLogo();
   if (!image) return false;
-  ctx.save();
-  ctx.beginPath();
-  ctx.roundRect(x, y, size, size, radius);
-  ctx.clip();
-  ctx.drawImage(image, x, y, size, size);
-  ctx.restore();
+  const scale = Math.min(size / image.naturalWidth, size / image.naturalHeight);
+  const width = image.naturalWidth * scale;
+  const height = image.naturalHeight * scale;
+  ctx.drawImage(image, x + (size - width) / 2, y + (size - height) / 2, width, height);
   return true;
 }
